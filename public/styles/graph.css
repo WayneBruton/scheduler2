@@ -1,0 +1,135 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,600);
+
+/* HEADER */
+
+
+
+header {
+  /* position: absolute; */
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  padding: 50px 100px 0;
+  /* animation: 1s fadein 0.5s forwards; */
+  opacity: 1;
+  color: white;
+  z-index: 1;
+  align-items: center;
+  background-color: #1f91ce;
+  /* background-color: red; */
+}
+
+@keyframes fadein {
+  100% {
+    opacity: 1;
+  }
+
+}
+
+header h2 {
+  font-family: "Quicksand", sans-serif;
+  font-size: 40px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+header nav {
+  display: flex;
+  margin-right: -15px;
+  justify-content: center;
+  align-items: center;
+}
+header nav li {
+  margin: 0 15px;
+}
+
+a {
+  text-decoration: none;
+  opacity: 0.75;
+  color: #fff;
+}
+
+ul, nav {
+  list-style: none;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+  opacity: 0.75;
+  color: #fff;
+}
+
+a:hover {
+  opacity: 1;
+}
+
+@media (max-width: 800px) {
+  header {
+    padding: 20px 50px;
+    flex-direction: column;
+  }
+  header h2 {
+    margin-bottom: 15px;
+  }
+}
+
+* {
+	margin:0;
+	padding:0;
+	box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-font-smoothing:antialiased;
+	-moz-font-smoothing:antialiased;
+	-o-font-smoothing:antialiased;
+	font-smoothing:antialiased;
+	text-rendering:optimizeLegibility;
+}
+
+body {
+	font-family:"Open Sans", Helvetica, Arial, sans-serif;
+	font-weight:300;
+	font-size: 12px;
+	line-height:30px;
+	color:#777;
+    /* background-color: #DDDDDD; */
+    /* background-image: url('../images/avian-bird-nest-birth-158734.jpg'); */
+    
+    background-size: cover;
+  /* #DDDDDD */
+}
+
+img {
+    z-index: 1;
+    background-size: cover;
+    display: block;
+}
+
+#graphs {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    justify-content: center;
+    margin-top: 30px;
+    width: 65%;
+}
+
+
+.chart {
+  margin: 2.5rem 2.5rem 2.5rem 2.5rem;
+  margin-left: 15rem;
+  align-content: center;
+}
+
+canvas {
+  background-color: silver;
+}
+
+
+
+

@@ -1,0 +1,362 @@
+header {
+    /* position: absolute; */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    padding: 50px 100px 0;
+    /* animation: 1s fadein 0.5s forwards; */
+    opacity: 1;
+    color: white;
+    z-index: 1;
+    align-items: center;
+    background-color: #1f91ce;
+    /* background-color: red; */
+  }
+  
+  @keyframes fadein {
+    100% {
+      opacity: 1;
+    }
+  
+  }
+  
+  header h2 {
+    font-family: "Quicksand", sans-serif;
+    font-size: 40px;
+    color: white;
+    margin-bottom: 20px;
+  }
+  
+  header nav {
+    display: flex;
+    margin-right: -15px;
+    justify-content: center;
+    align-items: center;
+  }
+  header nav li {
+    margin: 0 15px;
+  }
+  
+  
+  
+  ul, nav {
+    list-style: none;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  
+  a {
+    text-decoration: none;
+    opacity: 0.75;
+    color: #fff;
+  }
+  
+  a:hover {
+    opacity: 1;
+  }
+  
+  @media (max-width: 800px) {
+    header {
+      padding: 20px 50px;
+      flex-direction: column;
+    }
+    header h2 {
+      margin-bottom: 15px;
+    }
+  }
+  
+  * {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      -webkit-box-sizing:border-box;
+      -moz-box-sizing:border-box;
+      -webkit-font-smoothing:antialiased;
+      -moz-font-smoothing:antialiased;
+      -o-font-smoothing:antialiased;
+      font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+  }
+  
+  body {
+      font-family:"Open Sans", Helvetica, Arial, sans-serif;
+      font-weight:300;
+      font-size: 12px;
+      line-height:30px;
+      color:#777;
+      background-color: #DDDDDD;
+      /* background-image: url('../images/avian-bird-nest-birth-158734.jpg'); */
+      
+      background-size: cover;
+    /* #DDDDDD */
+  }
+
+
+/* body {
+    background-color: cornsilk;
+} */
+
+.content {
+    display: flex;  
+    flex-direction: column;
+    border: 2px solid blue;
+}
+
+p {
+    width: 20px;
+    align-items: flex-end;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.day-of-week {
+    display: flex;
+    flex-grow: 2;
+    margin: 2px 2px 2px 2px;
+    /* width: 148px; */
+}
+
+.week {
+    display: flex;
+    margin: 2px 2px 2px 2px;
+}
+
+.day {
+    width: 148px;
+    height: 150px;/* could be 100 Chnged from 100 * 100 to cater for 3 shifts */
+    border: 1px solid black;
+    margin: 2px 2px 2px 2px;
+    flex-grow: 2;
+    
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* flex-wrap: wrap; */
+}
+
+.week-day {
+    border: 1px solid black;
+    margin: 2px 2px 2px 2px;
+    width: 148px;
+    flex-grow: 2;
+    padding-top: 10px;
+    background-color: aquamarine;
+}
+
+.we {
+    background-color: lightgreen;
+}
+
+
+
+input {
+    font-family: "Quicksand", sans-serif;
+    /* width: 250px; */
+    font-size: 1.25em;
+    margin-top: 5px;
+    margin-left: 5px;
+    height: 30px;
+
+    color: #777;
+    margin-bottom: 5px;
+
+}
+
+label {
+  color: black;
+  font-weight: bold;
+  height: 10px;
+}
+
+#test {
+  width: 85px;
+  height: 30px;
+  margin-left: 10px;
+  /* background-color: gainsboro; */
+}
+
+.testing {
+  width: 150px;
+    height: 15px;
+    border: 1px solid black;
+    margin: 1px 1px 1px 1px;
+    /* flex-grow: 2; */
+}
+
+.shiftAllocated {
+  width: 150px;
+    height: 16px;
+    border: 1px solid black;
+    margin: 1px 1px 1px 1px;
+    box-shadow: 6px 4px 2px 1px #4E5451;
+    font-size: 1.05em;
+}
+
+.break {
+  height: 1px;
+}
+
+#monthLabel {
+  margin-left: 15px;
+}
+
+.clear {
+  border-radius: 4px;
+  background-color: blueviolet;
+}
+
+select {
+  font-size: 1rem;
+  padding: 2px 5px;
+  height: 30px;
+}
+
+/* SHIFT TIMES */
+
+.load-shift {
+  margin-top: 25px;
+  display: none;
+  width: 250px;
+  height: 250px;
+  background-color: #1f91ce;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+#process-shift {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  align-content: center;
+}
+
+#begin {
+  display: flex;
+  margin-left: 15px;
+  margin-top: 15px;
+  justify-content: space-between;
+}
+
+#end {
+  display: flex;
+  margin-left: 15px;
+  justify-content: space-between;
+}
+
+#start-time {
+  width: 100px;
+  margin-right: 20px;
+}
+
+#end-time {
+  width: 100px;
+  margin-right: 20px;
+}
+
+#submitTimes {
+  width: 100px;
+  height: 30px;
+  margin-left: 10px;
+}
+
+#processTimes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+/* MANUAL SHIFTS */
+
+.load-manual-shift {
+  margin-top: 25px;
+  display: none;
+  width: 250px;
+  height: 250px;
+  background-color: #1f91ce;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+#process-manual-shift {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  align-content: center;
+}
+
+#begin-manual {
+  display: flex;
+  margin-left: 15px;
+  margin-top: 15px;
+  justify-content: space-between;
+}
+
+#end-manual {
+  display: flex;
+  margin-left: 15px;
+  justify-content: space-between;
+}
+
+#start-time-manual {
+  width: 100px;
+  margin-right: 20px;
+}
+
+#end-time-manual {
+  width: 100px;
+  margin-right: 20px;
+}
+
+#submitTimes-manual {
+  width: 100px;
+  height: 30px;
+  margin-left: 10px;
+}
+
+#processTimes-manual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+/* .wk6 {
+  display: none;
+} */
+
+
+#tooltips {
+  display: flex;
+  align-content: space-around;
+}
+
+.tooltip {
+	display:none;
+	position:absolute;
+	border:1px solid #333;
+	background-color:gold;
+	/* border:1px solid #333;
+	background-color:#161616; */
+	border-radius:5px;
+	padding:10px;
+	/* color:#fff; */
+	color:black;
+  font-size:12px Arial;
+  font-weight: bold;
+  width: 250px;
+}
+
+.tooltip::after {
+  content: " ";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  /* border-color: gold transparent transparent transparent; */
+  border-color: black transparent transparent transparent;
+}
+

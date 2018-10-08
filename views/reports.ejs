@@ -1,0 +1,53 @@
+
+        <% include partials/header %>
+        <h2>Reports</h2>
+        <div id="reportDiv" > 
+            <button id="previousMonth" style="cursor: pointer">Previous</button>
+            <input type="month" name="" id="currentMonth">
+            <button id="nextMonth" style="cursor: pointer">Next</button>
+        </div>
+            <div id="reports">
+                <div class="reportDiv" id="duplicateShiftsDiv">
+                    <button class="reportBtn" id="printduplicateShifts" style="cursor: pointer">Duplicate shifts</button>
+                    <a class="reportLink" id="printduplicateShiftsLink" href="#" target="_blank" >Download duplicate shifts</a>  
+                </div>
+                <div class="reportDiv" id="morethan24hrsDiv">
+                    <button class="reportBtn" id="printmorethan24hrs"  style="cursor: pointer">Shifts days > 24hrs</button>
+                    <a class="reportLink" id="printmorethan24hrsLink" href="#" target="_blank" >Download shifts days > 24hrs</a>          
+                </div>
+                <div class="reportDiv" id="overlappingShiftsDiv">
+                    <button class="reportBtn" id="printoverlappingShifts"  style="cursor: pointer">Overlapping shifts</button>
+                    <a class="reportLink" id="printoverlappingShiftsLink" href="#" target="_blank" >Download overlapping shifts</a>          
+                </div>
+                <div class="reportDiv" id="longerThan12HoursShiftsDiv">
+                    <button class="reportBtn" id="printlongerThan12HoursShifts"  style="cursor: pointer">Shifts > 12 hours</button>
+                    <a class="reportLink" id="printlongerThan12HoursShiftsLink" href="#" target="_blank" >Download shifts > 12 hours</a>          
+                </div>
+                <div class="reportDiv" id="excessiveHoursDiv">
+                    <button class="reportBtn" id="printexcessiveHours"  style="cursor: pointer">> 195 hours in month</button>
+                    <a class="reportLink" id="printexcessiveHoursLink" href="#" target="_blank" >Download > 195 hours in month</a>          
+                </div>
+                <div class="reportDiv" id="monthlySummaryDiv">
+                    <button class="reportBtn" id="printmonthlySummary"  style="cursor: pointer">Monthly summary</button>
+                    <a class="reportLink" id="printmonthlySummaryLink" href="#" target="_blank" >Download monthly summary</a>          
+                </div>
+                <div class="reportDiv" id="careScheduleDiv">
+                    <button class="reportBtn" id="printCarerSchedules" style="cursor: pointer">Monthly schedules</button>
+                    <a class="reportLink" id="printCarerSchedulesLink" href="#" target="_blank" >Download monthly schedules</a>          
+                </div>
+                <div class="reportDiv" id="carerWagesDiv">
+                    <button class="reportBtn" id="printcarerWages" style="cursor: pointer">Monthly wages</button>
+                    <a class="reportLink" id="printcarerWagesLink" href="#" target="_blank" >Download monthly wages</a>          
+                </div>
+                <div class="reportDiv" id="clientHoursDiv">
+                    <button class="reportBtn" id="printclientHours" style="cursor: pointer">Billing by Client</button>
+                    <a class="reportLink" id="printclientHoursLink" href="#" target="_blank" >Download billing hours</a>          
+                </div>
+        </div>
+            <div class="lightbox" >
+                <div class="loader"></div> 
+            </div>      
+        
+    <!-- <script src="../public/js/jquery-3.3.1.min.js"></script>
+    <script src="../public/js/carers.js"></script> -->
+    <% include partials/footer %>

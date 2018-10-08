@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
+    <link rel="stylesheet" href="../public/styles/app.css">    
+    <title>Scheduler</title>
+</head>
+<body>
+    <h1>Scheduler</h1>
+    <h2>Some Imaginary Carer Agency</h2>
+    <p>Login to the Imaginary Agency scheduling app!</p><br>
+    <button id="login">Log In</button><br>
+    <form id="login-form" action="/login" method="POST">
+        <div id="user-input">
+            <label for="username">User name</label>
+            <input type="text" name="username" placeholder="user name">
+        </div>
+        <div id="password-input">
+            <label for="password">Password</label>
+            <input type="password" name="password" placeholder="password">
+        </div>
+        <div id="login-buttons">
+            <button  class="form-button cancel" type="reset">Cancel</button>
+            <button  class="form-button submit" type="submit">Enter</button>
+        </div>
+    </form>
+    
+    <script src="../public/js/jquery-3.3.1.min.js"></script>
+    <script src="../public/js/scheduler.js"></script>
+</body>
+</html>

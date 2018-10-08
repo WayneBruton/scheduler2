@@ -1,0 +1,351 @@
+header {
+    /* position: absolute; */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    padding: 50px 100px 0;
+    /* animation: 1s fadein 0.5s forwards; */
+    /* opacity: 0; */
+    color: white;
+    z-index: 1;
+    align-items: center;
+    background-color: #1f91ce;
+    /* background-color: red; */
+  }
+
+
+  
+  @keyframes fadein {
+    100% {
+      opacity: 1;
+    }
+  
+  }
+  
+  header h2 {
+    font-family: "Quicksand", sans-serif;
+    font-size: 40px;
+    color: white;
+    margin-bottom: 20px;
+  }
+  
+  header nav {
+    display: flex;
+    margin-right: -15px;
+    justify-content: center;
+    align-items: center;
+  }
+  header nav li {
+    margin: 0 15px;
+  }
+  
+  a {
+    text-decoration: none;
+    opacity: 0.75;
+    color: #fff;
+  }
+  
+  ul, nav {
+    list-style: none;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  
+  a {
+    text-decoration: none;
+    opacity: 0.75;
+    color: #fff;
+  }
+  
+  a:hover {
+    opacity: 1;
+  }
+  
+  @media (max-width: 800px) {
+    header {
+      padding: 20px 50px;
+      flex-direction: column;
+    }
+    header h2 {
+      margin-bottom: 15px;
+    }
+  }
+  
+  * {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      -webkit-box-sizing:border-box;
+      -moz-box-sizing:border-box;
+      -webkit-font-smoothing:antialiased;
+      -moz-font-smoothing:antialiased;
+      -o-font-smoothing:antialiased;
+      font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+  }
+  
+  body {
+      font-family:"Open Sans", Helvetica, Arial, sans-serif;
+      font-weight:300;
+      font-size: 12px;
+      line-height:30px;
+      color:#777;
+      background-color: #DDDDDD;
+      /* background-image: url('../images/avian-bird-nest-birth-158734.jpg'); */
+      
+      background-size: cover;
+    /* #DDDDDD */
+  }
+  
+  img {
+      z-index: 1;
+      background-size: cover;
+      display: block;
+  }
+/* #############################   */
+
+
+
+ul {
+    display: flex;
+    /* display: inline-table; */
+    flex-direction: column;
+    align-content: center;
+    align-items: center
+    
+
+}
+
+.carer-li {
+    display: flex;
+    /* flex-direction: column; */
+    align-content: center;
+    align-items: center;
+    width: 35%;
+    /* flex-direction: column; */
+    flex-wrap: wrap;
+    border: 1px solid black;
+    border-radius: 7px;
+    justify-content: space-evenly;
+    margin: 1px;
+    /* margin-left: 250px; */
+    padding: 2px;
+
+
+}
+
+h2 {
+    font-size: 3em;
+    display: block;
+    text-align: center;
+    color: black;
+    margin-top: 15px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    
+}
+
+/* #individual {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    border: 1px solid blue;
+
+}  */
+
+button {
+    /* display: none; */
+    background-color: #1fcecb;/* Green */
+    border: none;
+    color: white;
+    padding: 1px 3px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    border-radius: 3px;
+    margin-left: 15px;
+    margin-right: 50px;
+
+}
+
+/* #client-li { */
+#carer-li {
+    height: 32px;
+    width: 250px;
+    /* border: 1px solid black; */
+    /* margin-right: 35px; */
+    color: black;
+    font-weight: bold;
+    margin-left: 50px;
+}
+
+#back-forward {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 10px;
+
+}
+
+#back {
+    opacity: 0;
+}
+
+#searchInput {
+  width: 200px;
+  height: 25px;
+}
+
+
+
+
+#addRecord {
+  display: flex;
+  justify-content: center;
+  margin: 15px 15px;
+  padding: 5px 5px;
+}
+
+.lightbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  width: 60%;
+  width: 1em;
+  height: 60%;
+  color: #050000;
+  background-color: #ffffff00; 
+  opacity: 1; 
+}
+
+.lightboxA {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    width: 60%;
+    width: 1em;
+    height: 60%;
+    color: #050000;
+    background-color: #1f91ce; 
+    opacity: 1;
+    border: 2px solid grey;
+    border-radius: 7px;
+    
+}
+
+.inputData {
+  position: absolute;
+  width: 300px;
+  height: 420px;
+  border: 2px solid grey;
+  background-color: khaki;
+  display: flex;
+  align-content: flex-end;
+  padding-left: 10px;
+  padding-top: 10px;
+  border-radius: 7px;
+}
+
+.inputDatafields {
+  margin-top: 15px;
+
+}
+
+.inputBtns {
+  margin-top: 15px;
+  display: flex;
+}
+
+.inputs {
+  width: 250px;
+  height: 25px;
+
+}
+
+
+.lightbox1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  width: 60%;
+  width: 1em;
+  height: 60%;
+  color: #050000;
+  background-color: #ffffff00; 
+  opacity: 1; 
+}
+
+.lightboxA1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    width: 60%;
+    width: 1em;
+    height: 60%;
+    color: #050000;
+    background-color: #1f91ce; 
+    opacity: 1;
+    border: 2px solid grey;
+    border-radius: 7px;
+    
+}
+
+.inputData1 {
+  position: absolute;
+  width: 300px;
+  height: 510px;
+  border: 2px solid grey;
+  background-color: khaki;
+  display: flex;
+  align-content: flex-end;
+  padding-left: 10px;
+  padding-top: 10px;
+  border-radius: 7px;
+}
+
+.inputDatafields1 {
+  margin-top: 15px;
+
+}
+
+.inputBtns1 {
+  margin-top: 15px;
+  display: flex;
+}
+
+.inputs1 {
+  width: 250px;
+  height: 25px;
+
+}
+
+/* ACTIVE VS INACTIVE */
+
+.activityCheckbox {
+  display: flex;
+  align-content: space-around;
+  justify-content: center;
+}
+
+
+#activity {
+  display: inline;
+  color: black;
+  font-weight: bold;
+  padding: 10px;
+  transform: scale(1.5);
+}
+
+.checkboxtext
+{
+  font-size: 110%;
+  display: inline;
+  margin-right: 1em;
+}
+

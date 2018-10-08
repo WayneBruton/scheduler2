@@ -1,0 +1,236 @@
+
+    <% include partials/header %>
+    <input type="hidden" name="" id="" class="viewType" value="<%= viewjs %>">
+    <form action="">
+        <label for="">
+        <input type="month" name="" id="monthInput" min="2018-03" value="">
+        <button id="test" class="previous masterTooltip" title="Move to previous month" ><< Prev</button>
+        <label for="" id="monthLabel">  Month  </label>
+        <button id="test" class="next masterTooltip" title="Move to next month" >Next >></button>
+        <select id="client-select">
+            <option value="0">--Choose a client--</option>
+            <% for (var i = 0; i < clients.length; i++) { %>
+                <div class="client-select">
+                    <option value="<%=clients[i].id%>"><%= clients[i].last_name %> : <%= clients[i].first_name %> - <%= clients[i].cType %></option>
+                </div>    
+            <% } %> 
+        </select>
+        <select id="carer-select">
+            <option value="0">--Choose a carer--</option>
+            <% for (var i = 0; i < carers.length; i++) { %>
+                <div class="carer-select">
+                    <option value="<%=carers[i].id%>"><%= carers[i].last_name %> : <%= carers[i].first_name %></option>
+                </div>    
+            <% } %> 
+        </select>
+        <select id="shift-type">
+                <option value="0">--Choose a shift--</option>
+                <option value="1">--24 Hr Day Start Mon--</option>
+                <option value="2">--24 Hr Day Start Wed--</option>
+                <option value="3">--24 Hr Night Start Mon--</option>
+                <option value="4">--24 Hr Night Start Wed--</option>
+                <option value="5">--12 Hr Day Weekday only--</option>
+                
+            </select>
+        <button id="test"  class="shift1 masterTooltip" title="Click to allocate draft shifts for entire month. Client, Carer and Shift are required." >Allocate Shift</button>
+        <button id="test"  class="clear masterTooltip" title="Click to clear draft shifts" >Clear</button>  
+        <form action="/postshifts" method="post">
+        <!-- <form action="" method=""> -->
+            <button id="test" title="Click to post all the draft shifts." class="process masterTooltip" >Process</button>
+        </form>
+    </form>
+    <div id="process-shift">
+        <form action="" class="load-shift">
+            <div id="begin" >
+                <label for="start-time" id='hee'>Start Time</label>
+                <input type="time" name="start-time" id="start-time">
+            </div><br><br>
+            <div id="end" >
+                <label for="end-time" id='hee'>End Time    </label>
+                <input type="time" name="end-time" id="end-time">
+            </div>
+            <div id="processTimes" >
+               <button type="submit" id="submitTimes">Submit</button>     
+            </div>
+        </form>
+    </div>
+    <div id="process-manual-shift">
+            <form action="" class="load-manual-shift">
+                <div id="begin-manual" >
+                    <label for="start-time-manual" id='hee'>Start Time</label>
+                    <input type="time" name="start-time-manual" id="start-time-manual">
+                </div><br><br>
+                <div id="end-manual" >
+                    <label for="end-time-manual" id='hee'>End Time    </label>
+                    <input type="time" name="end-time-manual" id="end-time-manual">
+                </div>
+                <div id="processTimes-manual" >
+                   <button type="submit" id="submitTimes-manual">Submit</button>     
+                </div>
+            </form>
+        </div>
+        
+    
+    <!-- <h2>  - </label> <label for="">Client: Joe Soap</label> </h2> -->
+    <!-- <button id="test" >Test</button> -->
+    <div class="content">
+        <div class="day-of-week">
+                <p class="week-day" >Monday</p>
+                <p class="week-day" >Tuesday</p>
+                <p class="week-day" >Wednesday</p>
+                <p class="week-day" >Thursday</p>
+                <p class="week-day" >Friday</p>
+                <p class="week-day" >Saturday</p>
+                <p class="week-day" >Sunday</p>
+                <p>Week</p>
+        </div>
+        
+        <div class="week masterTooltip" title="Click to add a single Draft Shift. Click on a Draft shift to delete it. To delete posted shifts - go to timesheets screen.">
+            <div class="day wk1" id="day1">   
+                <label for="day1"></label>       
+            </div>
+            <div class="day wk1" id="day2">  
+                <label for="day2"></label>       
+            </div>
+            <div class="day wk1" id="day3">
+                 <label for="day3"></label>       
+            </div>
+            <div class="day wk1" id="day4"> 
+                <label for="day4"></label>       
+            </div>
+            <div class="day wk1" id="day5"> 
+                <label for="day5"></label>       
+            </div>
+            <div class="day we wk1" id="day6">
+                <label for="day6"></label>       
+            </div>
+            <div class="day we wk1" id="day7"> 
+                <label for="day7"></label>       
+            </div>
+            <p>WK1</p>
+        </div>
+        <div class="week masterTooltip" title="Click to add a single Draft Shift. Click on a Draft shift to delete it. To delete posted shifts - go to timesheets screen.">
+            <div class="day wk2" id="day8">  
+                <label for="day8"></label>       
+
+            </div>
+            <div class="day wk2" id="day9">   
+                <label for="day9"></label>       
+            </div>
+            <div class="day wk2" id="day10"> 
+                <label for="day10"></label>       
+            </div>
+            <div class="day wk2" id="day11">   
+                <label for="day11"></label>       
+            </div>
+            <div class="day wk2" id="day12"> 
+                <label for="day12"></label>       
+            </div>
+            <div class="day we wk2" id="day13">
+                <label for="day13"></label>       
+            </div>
+            <div class="day we wk2" id="day14"> 
+                <label for="day14"></label>       
+            </div>
+            <p>WK2</p>
+        </div>
+        <div class="week masterTooltip" title="Click to add a single Draft Shift. Click on a Draft shift to delete it. To delete posted shifts - go to timesheets screen.">
+            <div class="day wk3" id="day15">  
+                <label for="day15"></label>       
+            </div>
+            <div class="day wk3" id="day16">   
+                <label for="day16"></label>       
+            </div>
+            <div class="day wk3" id="day17">   
+                <label for="day17"></label>       
+            </div>
+            <div class="day wk3" id="day18"> 
+                <label for="day18"></label>       
+            </div>
+            <div class="day wk3" id="day19"> 
+                <label for="day19"></label>       
+            </div>
+            <div class="day we wk3" id="day20"> 
+                <label for="day20"></label>       
+            </div>
+            <div class="day we wk3" id="day21"> 
+                <label for="day21"></label>       
+            </div>
+            <p>WK3</p>
+        </div>
+        <div class="week masterTooltip" title="Click to add a single Draft Shift. Click on a Draft shift to delete it. To delete posted shifts - go to timesheets screen.">
+            <div class="day wk4" id="day22"> 
+                <label for="day22"></label>       
+            </div>      
+            <div class="day wk4" id="day23"> 
+                    <label for="day23"></label>    
+            </div>
+            <div class="day wk4" id="day24"> 
+                <label for="day24"></label>       
+            </div>
+            <div class="day wk4" id="day25">  
+                <label for="day25"></label>       
+            </div>
+            <div class="day wk4" id="day26"> 
+                <label for="day26"></label>       
+            </div>
+            <div class="day we wk4" id="day27"> 
+                <label for="day27"></label>       
+            </div>
+            <div class="day we wk4" id="day28"> 
+                <label for="day28"></label>       
+            </div>
+            <p>WK4</p>
+        </div>
+        <div class="week masterTooltip" title="Click to add a single Draft Shift. Click on a Draft shift to delete it. To delete posted shifts - go to timesheets screen.">
+            <div class="day wk5" id="day29">  
+                <label for="day29"></label>       
+            </div>
+            <div class="day wk5" id="day30">  
+                <label for="day30"></label>       
+            </div>
+            <div class="day wk5" id="day31">  
+                <label for="day31"></label>       
+            </div>
+            <div class="day wk5" id="day32"> 
+                <label for="day32"></label>       
+            </div>
+            <div class="day wk5" id="day33">
+                <label for="day33"></label>       
+            </div>
+            <div class="day we wk5" id="day34"> 
+                <label for="day34"></label>       
+            </div>
+            <div class="day we wk5" id="day35">  
+                <label for="day35"></label>       
+            </div>
+            <p>WK5</p>
+        </div>
+        <div class="week 6thWeek masterTooltip" title="Click to add a single Draft Shift. Click on a Draft shift to delete it. To delete posted shifts - go to timesheets screen.">
+            <div class="day wk6" id="day36"> 
+                <label for="day36"></label>       
+            </div>
+            <div class="day wk6" id="day37">  
+                <label for="day37"></label>       
+            </div>
+            <div class="day wk6" id="day38"> 
+                <label for="day38"></label>       
+            </div>
+            <div class="day wk6" id="day39"> 
+                <label for="day39"></label>       
+            </div>
+            <div class="day wk6" id="day40"> 
+                <label for="day40"></label>       
+            </div>
+            <div class="day we wk6" id="day41"> 
+                <label for="day41"></label>       
+            </div>
+                <div class="day we wk6" id="day42">  
+            <label for="day42"></label>       
+            </div>
+            <p>WK6</p>
+            </div>     
+    </div>
+   
+    <!-- <script src="../public/js/tooltip.js"></script> -->
+    <% include partials/footer %>

@@ -1,0 +1,433 @@
+
+
+header {
+    /* position: absolute; */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    padding: 50px 100px 0;
+    /* animation: 1s fadein 0.5s forwards; */
+    opacity: 1;
+    color: white;
+    z-index: 1;
+    align-items: center;
+    background-color: #1f91ce;
+    /* background-color: red; */
+  }
+
+
+  
+  @keyframes fadein {
+    100% {
+      opacity: 1;
+    }
+  
+  }
+  
+  header h2 {
+    font-family: "Quicksand", sans-serif;
+    font-size: 40px;
+    color: white;
+    margin-bottom: 20px;
+  }
+  
+  header nav {
+    display: flex;
+    margin-right: -15px;
+    justify-content: center;
+    align-items: center;
+  }
+  header nav li {
+    margin: 0 15px;
+  }
+  
+  a {
+    text-decoration: none;
+    opacity: 0.75;
+    color: #fff;
+  }
+  
+  ul, nav {
+    list-style: none;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  
+  a {
+    text-decoration: none;
+    opacity: 0.75;
+    color: #fff;
+  }
+  
+  a:hover {
+    opacity: 1;
+  }
+  
+  @media (max-width: 800px) {
+    header {
+      padding: 20px 50px;
+      flex-direction: column;
+    }
+    header h2 {
+      margin-bottom: 15px;
+    }
+  }
+  
+  * {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      -webkit-box-sizing:border-box;
+      -moz-box-sizing:border-box;
+      -webkit-font-smoothing:antialiased;
+      -moz-font-smoothing:antialiased;
+      -o-font-smoothing:antialiased;
+      font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+  }
+  
+  body {
+      font-family:"Open Sans", Helvetica, Arial, sans-serif;
+      font-weight:300;
+      font-size: 12px;
+      line-height:30px;
+      color:#777;
+      background-color: #DDDDDD;
+      /* background-image: url('../images/avian-bird-nest-birth-158734.jpg'); */
+      
+      background-size: cover;
+    /* #DDDDDD */
+  }
+  
+  img {
+      z-index: 1;
+      background-size: cover;
+      display: block;
+  }
+/* #############################   */
+
+
+
+ul {
+    display: flex;
+    /* display: inline-table; */
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    background-size: cover;
+
+    
+
+}
+
+
+h2 {
+    font-size: 3em;
+    display: block;
+    text-align: center;
+    color: black;
+    margin-top: 15px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    
+}
+
+
+button {
+    /* display: none; */
+    background-color: #1fcecb;/* Green */
+    border: none;
+    color: white;
+    padding: 1px 3px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    border-radius: 3px;
+    margin-left: 15px;
+    margin-right: 50px;
+    width: 85px;
+
+}
+
+/* #client-li { */
+
+
+#search {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+#searchInput {
+  width: 210px;
+  height: 35px;
+  font-size: 1.2em;
+  border-radius: 7px;
+}
+
+.shiftMonth {
+    display: flex;
+    /* align-content: center; */
+    justify-content: center;
+    align-content: space-between;
+    margin-bottom: 1.8rem;
+    margin-top: 1.8rem;
+    height: 1.5rem;
+    align-items: center;
+}
+
+#inputMonth {
+    /* font-size: 1.3em; */
+    /* font-family: "Quicksand", sans-serif; */
+
+    font-family: "Quicksand", sans-serif;
+    width: 250px;
+    font-size: 1.25em;
+    margin-top: 5px;
+    /* margin-left: 5px; */
+    height: 30px;
+    
+    color: #777;
+    /* margin-bottom: 25px; */
+}
+
+.timesheet-li-div {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    width: 60%;
+    height: 5rem;;
+    /* flex-wrap: wrap; */
+    border: 1px solid black;
+    border-radius: 7px;
+    justify-content: space-evenly;
+    /* justify-content: center; */
+    margin: 1px;
+    /* margin-left: 250px; */
+    padding: 2px;
+
+
+}
+
+.timesheet-li {
+    height: 32px;
+    /* width: 550px; */
+    width: 70%;
+    /* border: 1px solid black; */
+    /* margin-right: 35px; */
+    color: black;
+    font-weight: bold;
+    margin-left: 25px;
+}
+
+.timesheetDate {
+  width: 8.75rem;
+  height: 2rem;
+  font-size: 0.9rem;
+  font-family: "Quicksand", sans-serif;
+  color: #777;
+
+}
+
+.timesheetTime {
+  width: 8.5rem;
+  height: 2rem;
+  font-size: 0.9rem;
+  font-family: "Quicksand", sans-serif;
+  color: #777;
+}
+
+.processBtn {
+  text-align: center;
+  text-decoration: none;
+  background-color: transparent;
+  /* text-decoration: #777; */
+  display: inline-block;
+  font-size: 20px;
+  border-radius: 3px;
+  margin-left: 10px;
+  margin-right: 1px;
+  width: 55px;
+  /* width: 100px; */
+}
+
+.deleteBtn {
+  text-align: center;
+  text-decoration: none;
+  background-color: transparent;
+  /* text-decoration: #777; */
+  display: inline-block;
+  font-size: 20px;
+  border-radius: 3px;
+  margin-left: 10px;
+  margin-right: 1px;
+  width: 55px;
+  /* width: 100px; */
+}
+
+/* ACTIVE VS INACTIVE */
+
+.activityCheckbox {
+    display: flex;
+    align-content: space-around;
+    justify-content: center;
+  }
+  
+  
+  #activity {
+    display: inline;
+    color: black;
+    font-weight: bold;
+    padding: 10px;
+    transform: scale(1.5);
+  }
+  
+  .checkboxtext
+  {
+    font-size: 110%;
+    display: inline;
+    margin-left: 1em;
+  }
+
+  .searchSpan {
+      color: black;
+      display: inline;
+      margin-left: 1rem;
+      margin-right: 1rem;
+      font-weight: bold;
+  }
+
+  #radioDiv {
+      border: 1px solid grey;
+      margin-left: 1em;
+      border-radius: 7px;
+
+  }
+
+  #employeeRadio {
+      margin-right: 1em;
+      
+  }
+
+  /* TOOLTIPS */
+
+  #tooltips {
+    display: flex;
+    align-content: space-around;
+  }
+  
+  .tooltip {
+    display:none;
+    position:absolute;
+    border:1px solid #333;
+    background-color:gold;
+    /* border:1px solid #333;
+    background-color:#161616; */
+    border-radius:5px;
+    padding:10px;
+    /* color:#fff; */
+    color:black;
+    font-size:12px Arial;
+    font-weight: bold;
+    width: 150px;
+  }
+  
+  .tooltip::after {
+    content: " ";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    /* border-color: gold transparent transparent transparent; */
+    border-color: black transparent transparent transparent;
+  }
+
+  .processWageFile {
+    width: 8em;
+    margin-right: 5px;
+  }
+
+  .countLabel {
+    align-content: center;
+    color: blue;
+  }
+
+.countLabelDiv {
+  display: flex;
+    /* align-content: center; */
+    justify-content: center;
+    align-content: space-between;
+    margin-bottom: 1.8rem;
+    margin-top: 0.8rem;
+    height: 1.5rem;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.over24hrsLabel  {
+    align-content: center;
+    color: orangered;
+    display: none;
+
+}
+.duplicateLabel {
+    align-content: center;
+    color: orangered;
+    display: none;
+
+}
+
+.overlapsLabel {
+    align-content: center;
+    color: orangered;
+    display: none;
+}
+.longShiftsLabel {
+    align-content: center;
+    color: orangered;
+    display: none;
+}
+
+.issuesLabelDiv {
+  display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: space-between;
+    margin-bottom: 1.8rem;
+    margin-top: 2.5rem;
+    /* heiinputMonthght: 0rem; */
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.searchShifts {
+  margin-right: 5px;
+}
+
+#openDownLoadFile {
+  /* opacity: 0; */
+  color: black;
+  font-size: 1.5em;
+  font-weight: bold;
+  display: none;
+  /* display: inline; */
+
+}
+
+  
+
+  
+  
+
+
+
+
+
+

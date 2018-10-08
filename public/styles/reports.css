@@ -1,0 +1,248 @@
+header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    padding: 50px 100px 0;
+    color: white;
+    z-index: 1;
+    align-items: center;
+    background-color: #1f91ce;
+  }
+
+
+  
+  @keyframes fadein {
+    100% {
+      opacity: 1;
+    }
+  
+  }
+  
+  header h2 {
+    font-family: "Quicksand", sans-serif;
+    font-size: 40px;
+    color: white;
+    margin-bottom: 20px;
+  }
+  
+  header nav {
+    display: flex;
+    margin-right: -15px;
+    justify-content: center;
+    align-items: center;
+  }
+  header nav li {
+    margin: 0 15px;
+  }
+  
+  a {
+    text-decoration: none;
+    opacity: 0.75;
+    color: #fff;
+  }
+  
+  ul, nav {
+    list-style: none;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  
+  a {
+    text-decoration: none;
+    opacity: 0.75;
+    color: #fff;
+  }
+  
+  a:hover {
+    opacity: 1;
+  }
+  
+  @media (max-width: 800px) {
+    header {
+      padding: 20px 50px;
+      flex-direction: column;
+    }
+    header h2 {
+      margin-bottom: 15px;
+    }
+  }
+  
+  * {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      -webkit-box-sizing:border-box;
+      -moz-box-sizing:border-box;
+      -webkit-font-smoothing:antialiased;
+      -moz-font-smoothing:antialiased;
+      -o-font-smoothing:antialiased;
+      font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+  }
+  
+  body {
+      font-family:"Open Sans", Helvetica, Arial, sans-serif;
+      font-weight:300;
+      font-size: 12px;
+      line-height:30px;
+      color:#777;
+      background-color: #DDDDDD;
+      background-size: cover;
+  }
+  
+  img {
+      z-index: 1;
+      background-size: cover;
+      display: block;
+  }
+
+ul {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center
+}
+
+h2 {
+    font-size: 3em;
+    display: block;
+    text-align: center;
+    color: black;
+    margin-top: 15px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+
+
+button {
+    background-color: #1fcecb;
+    border: none;
+    color: white;
+    padding: 1px 3px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    border-radius: 3px;
+    margin-left: 15px;
+    margin-right: 50px;
+}
+
+
+
+#reports {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5rem;
+}
+
+
+#reportDiv {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  margin-bottom: 5.5em;
+}
+
+.reportDiv {
+  margin-left: 20%;
+  margin-top: 1.5rem;
+  display: flex;
+  width: 45%;
+  justify-content: space-between;
+  justify-items: center;
+  padding: 0.75rem;
+  border: 1px solid grey;
+  border-radius: 7px;
+}
+
+.reportLink {
+  display: none;
+  color: blue;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-decoration-line: underline;
+}
+
+.reportBtn {
+  width: 15rem;
+}
+
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  padding-top: 15%;
+  align-content: space-around;
+  justify-content: center;
+  align-items: center;
+  color: #050000;
+  background-color: #ffffff00; 
+  z-index: 1000;
+
+}
+
+.loader {
+  margin:auto;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  border: 16px solid #bdc3c7;
+  width: 100px;
+  height: 100px;
+  border-top-color: #1abc9c;
+  border-bottom-color: #3498db;
+  border-radius: 50%;
+  animation: coloredspin 4s linear infinite;
+}
+
+
+#currentMonth {
+  font-family: "Quicksand", sans-serif;
+  width: 250px;
+  font-size: 1.25em;
+  margin-top: 5px;
+  height: 30px;
+  color: #777;
+}
+
+#previousMonth {
+
+width: 7.5rem;
+}
+
+#nextMonth {
+  width: 7.5rem;
+
+}
+
+@keyframes coloredspin {
+  0%{
+    transform: rotate(0deg) scale(1);
+    border-top-color: firebrick;
+    border-bottom-color: firebrick;
+  }
+  25% {
+    border-top-color: firebrick;
+    border-bottom-color: firebrick;
+  }
+  50% {
+    transform: rotate(360deg) scale(1.05);
+    border-top-color: firebrick;
+    border-bottom-color: firebrick;
+  }
+  75% {
+    border-top-color: firebrick;
+    border-bottom-color: firebrick;
+  }
+  100%{
+    transform: rotate(720deg) scale(1);
+    border-top-color: firebrick;
+    border-bottom-color: firebrick;
+  }
+}
+

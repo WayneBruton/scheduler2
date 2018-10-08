@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js" integrity="sha384-3LK/3kTpDE/Pkp8gTNp2gR/2gOiwQ6QaO7Td0zV76UFJVhqLl4Vl3KL1We6q6wR9" crossorigin="anonymous"></script>
+    <script src="../public/js/jquery-3.3.1.min.js"></script>
+    <script src="../public/js/moment.js"></script>
+    <script src="../../public/js/logoutauto.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script class="script" src="<%= viewjs %>"></script>
+    <link rel="stylesheet" href="<%= viewcss %>">
+    <!-- <script class="script" src="../../public/js/shifts.js"></script> -->
+    
+    <link rel="stylesheet" href="../public/styles/footer.css">    
+    <title>Scheduler</title>
+</head>
+<body>
+
+<header>
+    <h2 ><a href="/"><i class="fas fa-phone-slash"></i>Carer Agency</a> </h2>
+    <nav>
+        <% if (viewjs === '../public/js/admin.js') { %>
+            <!-- <li><a class="displayTooltips" href="#">Show Tooltips</a></li> -->
+            <li><a href="/dashboard">Dashboard</a> </li>
+            <li><a href="/clients">Clients</a> </li>
+            <li><a href="/carers">Carers</a> </li>
+            <li><a href="/shifts">Shifts</a> </li>
+            <li><a href="/processTimesheets">Timesheets</a> </li>
+            <li><a href="/reports">Reports</a> </li>
+            <!-- <li><a href="/admin">Admin</a> </li> -->
+            <li><a href="/logout">Logout</a> </li>
+        <% } %>
+        <% if (viewjs === '../public/js/carers.js') { %>
+            <!-- <li><a class="displayTooltips" href="#">Show Tooltips</a></li> -->
+            <li><a href="/dashboard">Dashboard</a> </li>
+            <li><a href="/clients">Clients</a> </li>
+            <!-- <li><a href="/carers">Carers</a> </li> -->
+            <li><a href="/shifts">Shifts</a> </li>
+            <li><a href="/processTimesheets">Timesheets</a> </li>
+            <li><a href="/reports">Reports</a> </li>
+            <li><a href="/admin">Admin</a> </li>
+            <li><a href="/logout">Logout</a> </li>
+        <% } %>
+        <% if (viewjs === '../public/js/clients.js') { %>
+            <!-- <li><a class="displayTooltips" href="#">Show Tooltips</a></li> -->
+            <li><a href="/dashboard">Dashboard</a> </li>
+            <!-- <li><a href="/clients">Clients</a> </li> -->
+            <li><a href="/carers">Carers</a> </li>
+            <li><a href="/shifts">Shifts</a> </li>
+            <li><a href="/processTimesheets">Timesheets</a> </li>
+            <li><a href="/reports">Reports</a> </li>
+            <li><a href="/admin">Admin</a> </li>
+            <li><a href="/logout">Logout</a> </li>
+        <% } %><% if (viewjs === '../public/js/dashboard.js') { %>
+            <!-- <li><a class="displayTooltips" href="#">Show Tooltips</a></li> -->
+            <!-- <li><a href="/dashboard">Dashboard</a> </li> -->
+            <li><a href="/clients">Clients</a> </li>
+            <li><a href="/carers">Carers</a> </li>
+            <li><a href="/shifts">Shifts</a> </li>
+            <li><a href="/processTimesheets">Timesheets</a> </li>
+            <li><a href="/reports">Reports</a> </li>
+            <li><a href="/admin">Admin</a> </li>
+            <li><a href="/logout">Logout</a> </li>
+        <% } %><% if (viewjs === '../public/js/reports.js') { %>
+            <!-- <li><a class="displayTooltips" href="#">Show Tooltips</a></li> -->
+            <li><a href="/dashboard">Dashboard</a> </li>
+            <li><a href="/clients">Clients</a> </li>
+            <li><a href="/carers">Carers</a> </li>
+            <li><a href="/shifts">Shifts</a> </li>
+            <li><a href="/processTimesheets">Timesheets</a> </li>
+            <!-- <li><a href="/reports">Reports</a> </li> -->
+            <li><a href="/admin">Admin</a> </li>
+            <li><a href="/logout">Logout</a> </li>
+        <% } %><% if (viewjs === '../public/js/shifts.js') { %>
+            <li><a class="displayTooltips" href="#">Show Tooltips</a></li>
+            <li><a href="/dashboard">Dashboard</a> </li>
+            <li><a href="/clients">Clients</a> </li>
+            <li><a href="/carers">Carers</a> </li>
+            <!-- <li><a href="/shifts">Shifts</a> </li> -->
+            <li><a href="/processTimesheets">Timesheets</a> </li>
+            <li><a href="/reports">Reports</a> </li>
+            <li><a href="/admin">Admin</a> </li>
+            <li><a href="/logout">Logout</a> </li>
+        <% } %><% if (viewjs === '../public/js/processTimesheets.js') { %>
+            <!-- <li><a class="displayTooltips" href="#">Show Tooltips</a></li> -->
+            <li><a href="/dashboard">Dashboard</a> </li>
+            <li><a href="/clients">Clients</a> </li>
+            <li><a href="/carers">Carers</a> </li>
+            <li><a href="/shifts">Shifts</a> </li>
+            <!-- <li><a href="/processTimesheets">Timesheets</a> </li> -->
+            <li><a href="/reports">Reports</a> </li>
+            <li><a href="/admin">Admin</a> </li>
+            <li><a href="/logout">Logout</a> </li>
+        <% } %><% if (viewjs === '../public/js/register.js') { %>
+            <!-- <li><a class="displayTooltips" href="#">Show Tooltips</a></li> -->
+            <li><a href="/dashboard">Dashboard</a> </li>
+            <li><a href="/clients">Clients</a> </li>
+            <li><a href="/carers">Carers</a> </li>
+            <li><a href="/shifts">Shifts</a> </li>
+            <li><a href="/processTimesheets">Timesheets</a> </li>
+            <li><a href="/reports">Reports</a> </li>
+            <li><a href="/admin">Admin</a> </li>
+            <li><a href="/logout">Logout</a> </li>
+        <% } %><% if (viewjs === '../public/js/graph.js') { %>
+            <!-- <li><a class="displayTooltips" href="#">Show Tooltips</a></li> -->
+            <li><a href="/dashboard">Dashboard</a> </li>
+            <li><a href="/clients">Clients</a> </li>
+            <li><a href="/carers">Carers</a> </li>
+            <li><a href="/shifts">Shifts</a> </li>
+            <li><a href="/processTimesheets">Timesheets</a> </li>
+            <li><a href="/reports">Reports</a> </li>
+            <li><a href="/admin">Admin</a> </li>
+            <li><a href="/logout">Logout</a> </li>
+        <% } %>
+       
+
+
+        <!-- <li><a href="/logout">Logout</a> </li> -->
+        <li><a href="https://eccentrictoad.com/contact" target="_top">Feedback</a> </li>
+        <li><a href="mailto: wayne@eccentrictoad.com?Subject=Post%20enquiry" target="_top">Contact</a> </li>
+    </nav>
+</header>

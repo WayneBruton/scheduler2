@@ -1,0 +1,111 @@
+
+        <% include partials/header %>
+        <h2>Carers</h2>
+
+
+        <div class="activityCheckbox">
+            <div id="activity">
+                <input type="hidden" name="activeOrNot" class="activeOrNot" value="true" >
+                <span class="checkboxtext" >Active</span><input type="checkbox" name="activeOrNot" id="activeYes">
+            </div>
+        </div>
+        
+    
+        <div id="addRecord" >
+            <form action="" method="post">
+                <button id="addPerson" >Add New Carer</button>   
+            </form>
+            
+        </div>
+
+        <div id="back-forward">    
+            <form id="page-back" action="/carers/:page" method="get">
+                <button id="back"> << Back</button>
+            </form>
+            <form id="searchForm" action="/carer/:search" method="get">
+                <input id="searchInput" type="text" placeholder="search by Last Name" autocomplete="off">
+            </form>
+            <form id="searchFormEnd" action="/carerReturn" method="get">
+                <button id="searchEndBtn" type="submit">Return All Active</button>
+            </form> 
+                     
+            <form  id="page-forward" action="/carers/:page" method="get">
+                <button id="forward"> Forward >> </button>
+            </form>     
+        </div>
+        
+        <div>
+            <ul id="carerData" >    
+                <% for (var i = 0; i < carers.length; i++) { %>
+                    <div class="carer-li">
+                        <li id="carer-li"> <%= carers[i].id %> - <%= carers[i].first_name %> : <%= carers[i].last_name %></li>
+                        <button class="edit-btn" id="<%= carers[i].id %>">Edit / View</button>
+                    </div>    
+                <% } %> 
+            </ul>
+        </div>
+        
+        <div class="lightbox" >
+                <div class="lightboxA" >
+                    <div class="inputData"> 
+                        <div class="inputDataFields" >
+                            <h2>Add Carer</h2>
+                            <form action="/addNewCarer" method="post">
+                                <label for="lastName">Last Name</label><br>
+                                <input  class="inputs"  type="text" name="lastName" id="addLastName" placeholder="Last Name"><br>
+                                <label for="firstName">First Name</label><br>
+                                <input  class="inputs" type="text" name="firstName" id="addFirstName" placeholder="First Name"><br>
+                                <label for="email">Email</label><br>
+                                <input class="inputs"  type="email" name="email" id="addEmail" placeholder="email" ><br>
+                                <label for="employeeNumber">Employee No</label><br>
+                                <input class="inputs"  type="text" name="employeeNumber" id="addEENumber" placeholder="Employee No" ><br>
+                                <label for="ratePerHour">Rate per Hour</label><br>
+                                <input class="inputs"  type="number" name="ratePerHour" id="" placeholder="Rate per Hour" min="0.00" max="1000.00" value="18.50" step="0.01" ><br>
+                                <!-- <input id="activeChecked" type="checkbox" name="active" value="active">      Carer is active<br> -->
+                                <!-- <label for="activityReason">Reason for Inactivity</label><br>
+                                <input class="inputs"  type="text" name="activityReason" id="" placeholder="Reason for inactivity" ><br> -->
+                                <div class="inputBtns" >
+                                    <button  id="addNewCarer"  type="submit">Submit</button>
+                                    <button id="reset" type="reset">Reset</button>
+                                </div>
+                            </form>
+                        </div>  
+                    </div>
+                </div>  
+            </div>
+
+
+            <div class="lightbox1" >
+                <div class="lightboxA1" >
+                    <div class="inputData1"> 
+                        <div class="inputDataFields1" >
+                            <h2>Edit Carer</h2>
+                            <form action="/editCarer" method="post">
+                                <input type="hidden" name="id" id="carer-id">
+                                <label for="lastName">Last Name</label><br>
+                                <input  class="inputs1"  type="text" name="lastName" id="editLastName" placeholder="Last Name"><br>
+                                <label for="firstName">First Name</label><br>
+                                <input  class="inputs1" type="text" name="firstName" id="editFirstName" placeholder="First Name"><br>
+                                <label for="email">Email</label><br>
+                                <input class="inputs1"  type="email" name="email" id="editEmail" placeholder="email" ><br>
+                                <label for="employeeNumber">Employee No</label><br>
+                                <input class="inputs1"  type="text" name="employeeNumber" id="editEENumber" placeholder="Employee No" ><br>
+                                <label for="ratePerHour">Rate per Hour</label><br>
+                                <input class="inputs1"  type="number" name="ratePerHour" id="ratePerHour" placeholder="Rate per Hour" min="0.00" max="1000.00" value="18.50" step="0.01" ><br>
+                                <input id="activeChecked1" type="checkbox" name="active" value="1">Carer is active<br>
+                                <input type="hidden" name="activity" id="isActive" >
+                                <label id="inactivityReasonLabel" for="activityReason">Reason for Inactivity</label><br>
+                                <input class="inputs1"  type="text" name="activityReason" id="inactivityReason" placeholder="Reason for inactivity" ><br>
+                                <div class="inputBtns" >
+                                    <button  id="editNewCarer"  type="submit">Submit</button>
+                                    <button id="resetEdit" type="reset">Reset</button>
+                                </div>
+                            </form>
+                        </div>  
+                    </div>
+                </div>  
+            </div>
+            
+    <!-- <script src="../public/js/jquery-3.3.1.min.js"></script>
+    <script src="../public/js/carers.js"></script> -->
+    <% include partials/footer %>

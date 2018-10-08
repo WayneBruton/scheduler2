@@ -1,0 +1,99 @@
+
+        <% include partials/header %>
+        <h2>Clients</h2>
+
+        <div class="activityCheckbox">
+                <div id="activity">
+                    <input type="hidden" name="activeOrNot" class="activeOrNot" value="true" >
+                    <span class="checkboxtext" >Active</span><input type="checkbox" name="activeOrNot" id="activeYes">
+                </div>
+            </div>
+
+        <div id="addRecord" >
+            <form action="" method="post">
+                <button id="addPerson" >Add New Client</button>   
+            </form>
+        </div>
+
+        <div id="back-forward">    
+            <form id="page-back" action="/clients/:page" method="get">
+                <button id="back"> << Back</button>
+            </form>
+            <form id="searchForm" action="/client/:search" method="get">
+                <input id="searchInput" type="text" placeholder="search by Last Name" autocomplete="off">
+            </form>
+            <form id="searchFormEnd" action="/clientReturn" method="get">
+                <button id="searchEndBtn" type="submit">Return All Active</button>
+            </form>          
+            <form  id="page-forward" action="/clients/:page" method="get">
+                <button id="forward"> Forward >> </button>
+            </form>      
+        </div> 
+
+        <div>
+            <ul id="clientData">    
+                <% for (var i = 0; i < clients.length; i++) { %>
+                    <div class="client-li">
+                        <li id="client-li"> <%= clients[i].id %> - <%= clients[i].first_name %> : <%= clients[i].last_name %></li>
+                        <button class="edit-btn" id="<%= clients[i].id %>">Edit / View</button>
+                    </div>          
+                <% } %> 
+            </ul>
+        </div> 
+        <div class="lightbox" >
+            <div class="lightboxA" >
+                <div class="inputData"> 
+                    <div class="inputDataFields" >
+                        <h2>Add Client</h2>
+                        <form action="/addNewClient" method="post">
+                            <label for="lastName">Last Name</label><br>
+                            <input  class="inputs"  type="text" name="lastName" id="addLastName" placeholder="Last Name" autocomplete="off"><br>
+                            <label for="firstName">First Name</label><br>
+                            <input  class="inputs" type="text" name="firstName" id="addFirstName" placeholder="First Name" autocomplete="off"><br>
+                            <label for="email">Email</label><br>
+                            <input class="inputs"  type="email" name="email" id="addEmail" placeholder="email" autocomplete="off"><br>
+                            <label for="clientType">Client Type</label><br>
+                            <select class="inputs"  type="select" name="clientType" id="addClientType"></select><br>
+                            <div class="inputBtns" >
+                                <button  id="addNewClient"  type="submit">Submit</button>
+                                <button id="reset" type="reset">Reset</button>
+                            </div>   
+                        </form>
+                    </div>  
+                </div> 
+            </div>  
+        </div>
+
+        <div class="lightbox1" >
+            <div class="lightboxA1" >
+                <div class="inputData1"> 
+                    <div class="inputDataFields1" >
+                        <h2>Edit Client</h2>
+                        <form action="/editClient" method="post">
+                            <input type="hidden" name="id" id="client-id">
+                            <label for="lastName">Last Name</label><br>
+                            <input  class="inputs1"  type="text" name="lastName" id="editLastName" placeholder="Last Name" autocomplete="off"><br>
+                            <label for="firstName">First Name</label><br>
+                            <input  class="inputs1" type="text" name="firstName" id="editFirstName" placeholder="First Name" autocomplete="off"><br>
+                            <label for="email">Email</label><br>
+                            <input class="inputs1"  type="email" name="email" id="editEmail" placeholder="email" autocomplete="off"><br>
+                            <label for="clientType">Client Type</label><br>
+                            <select class="inputs1"  type="select" name="clientType" id="editClientType"></select><br>
+                            <input id="activeChecked1" type="checkbox" name="active" value="1">Client is active<br>
+                            <input type="hidden" name="activity" id="isActive" >
+                            <label id="inactivityReasonLabel" for="activityReason">Reason for Inactivity</label><br>
+                            <input class="inputs1"  type="text" name="activityReason" id="inactivityReason" placeholder="Reason for inactivity" autocomplete="off"><br>
+                            <div class="inputBtns" >
+                                <button  id="editNewClient"  type="submit">Submit</button>
+                                <button id="resetEdit" type="reset">Reset</button>
+                            </div>   
+                        </form>
+                    </div>  
+                </div> 
+            </div>  
+        </div>
+            
+    <!-- <link rel="stylesheet" href="../public/styles/clients.css"> -->
+    <!-- <script src="../public/js/jquery-3.3.1.min.js"></script>
+    <script src="../public/js/clients.js"></script> -->
+    <% include partials/footer %>

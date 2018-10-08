@@ -1,0 +1,69 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    text-shadow: 0 .05rem .1rem rgba(0,0,0,.5);
+    color: rgb(66,69,86);
+    background-image: url('../images/avian-bird-nest-birth-158734.jpg');
+    background-size: cover;
+    font-weight: 100;
+}
+
+h1,h2, p, label {
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+}
+
+#login, .form-button {
+    background-color: #1fcecb;/* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 25px;
+    border-radius: 7px;
+}
+
+#login-form {
+    display: none;
+    /* display: inline-block; */
+    flex-direction: column;
+    background-color: grey;
+    width: 30%;
+    align-content: center;
+    align-items: center;
+    padding: 25px;
+    margin: 25px;
+    border: 2px solid lightgrey;
+    border-radius: 7px;
+    
+}
+
+#user-input, #password-input, #login-buttons {
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    margin: 15px;
+}
+
+input {
+    height: 45px;
+    width: 250px;
+}
+
+label {
+    height: 45px;
+    width: 250px;
+    padding-top: 15px;
+    font-size: 25px;
+}
+
+.cancel {
+    margin-left: 50px;
+}
+
+.submit {
+    margin-right: 50px;
+}
