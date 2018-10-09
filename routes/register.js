@@ -4,7 +4,8 @@ var connection = require('./connection');
 var expressValidator = require('express-validator');
 
 
-var bcrypt = require('bcrypt');
+
+var bcrypt = require('bcryptjs');
 var passport = require('passport');
 
 const  { authenticationMiddleware } = require('./middleware');

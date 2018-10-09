@@ -24,32 +24,21 @@ $(function() {
         $("#printCarerSchedulesLink, #printduplicateShiftsLink, #printmorethan24hrsLink, #printoverlappingShiftsLink, #printlongerThan12HoursShiftsLink, #printexcessiveHoursLink, #printcarerWagesLink, #printmonthlySummaryLink, #printclientHoursLink").css("display", "none"); 
     }
 
-    // console.log(initialMonth);
-
     var filetodownload;
     var monthForSchedules;
-
-
+    
     $('#printduplicateShifts').click(function (e) { 
         e.preventDefault();
         var monthForSchedules = $('#currentMonth').val();
         var url = '/reports/duplicateShifts/' + monthForSchedules;
         $.get(url, function(data){
-            filetodownload = data.split('-');
-            console.log(filetodownload);
-            host = filetodownload[1];
-            port = filetodownload[2];
-            filetodownload = filetodownload[0];
-            console.log(filetodownload);
-            console.log(`http://${host}:${port}/files/${filetodownload}`)
-            console.log(data);
             $("body").css("background-color", "orange");
             setTimeout(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 100)
         }).done(function(response){
-            console.log(response);
-            $("#printduplicateShiftsLink").attr("href", `http://${host}:${port}/download/${filetodownload}`);
+            filetodownload = response;
+            $("#printduplicateShiftsLink").attr("href", `${filetodownload}`);
             $("#printduplicateShiftsLink").css("display", "inline");
         });     
     });
@@ -60,21 +49,13 @@ $(function() {
         var monthForSchedules = $('#currentMonth').val();
         var url = '/reports/printmorethan24hrs/' + monthForSchedules;
         $.get(url, function(data){
-            filetodownload = data.split('-');
-            console.log(filetodownload);
-            host = filetodownload[1];
-            port = filetodownload[2];
-            filetodownload = filetodownload[0];
-            console.log(filetodownload);
-            console.log(`http://${host}:${port}/files/${filetodownload}`)
-            console.log(data);
             $("body").css("background-color", "orange");
             setTimeout(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 100)
         }).done(function(response){
-            console.log(response);
-            $("#printmorethan24hrsLink").attr("href", `http://${host}:${port}/download/${filetodownload}`);
+            filetodownload = response;
+            $("#printmorethan24hrsLink").attr("href", `${filetodownload}`);
             $("#printmorethan24hrsLink").css("display", "inline");
         });     
     });
@@ -84,21 +65,13 @@ $(function() {
         var monthForSchedules = $('#currentMonth').val();
         var url = '/reports/overlappingshifts/' + monthForSchedules;
         $.get(url, function(data){
-            filetodownload = data.split('-');
-            console.log(filetodownload);
-            host = filetodownload[1];
-            port = filetodownload[2];
-            filetodownload = filetodownload[0];
-            console.log(filetodownload);
-            console.log(`http://${host}:${port}/files/${filetodownload}`)
-            console.log(data);
             $("body").css("background-color", "orange");
             setTimeout(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 100)
         }).done(function(response){
-            console.log(response);
-            $("#printoverlappingShiftsLink").attr("href", `http://${host}:${port}/download/${filetodownload}`);
+            filetodownload = response;
+            $("#printoverlappingShiftsLink").attr("href", `${filetodownload}`);
             $("#printoverlappingShiftsLink").css("display", "inline");
         });     
     });
@@ -108,21 +81,13 @@ $(function() {
         var monthForSchedules = $('#currentMonth').val();
         var url = '/reports/longerthan12hourshifts/' + monthForSchedules;
         $.get(url, function(data){
-            filetodownload = data.split('-');
-            console.log(filetodownload);
-            host = filetodownload[1];
-            port = filetodownload[2];
-            filetodownload = filetodownload[0];
-            console.log(filetodownload);
-            console.log(`http://${host}:${port}/files/${filetodownload}`)
-            console.log(data);
             $("body").css("background-color", "orange");
             setTimeout(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 100)
         }).done(function(response){
-            console.log(response);
-            $("#printlongerThan12HoursShiftsLink").attr("href", `http://${host}:${port}/download/${filetodownload}`);
+            filetodownload = response;
+            $("#printlongerThan12HoursShiftsLink").attr("href", `${filetodownload}`);
             $("#printlongerThan12HoursShiftsLink").css("display", "inline");
         });     
     });
@@ -131,24 +96,15 @@ $(function() {
     $('#printexcessiveHours').click(function (e) { 
         e.preventDefault();
         var monthForSchedules = $('#currentMonth').val();
-        console.log(monthForSchedules);
         var url = '/reports/excessivehours/' + monthForSchedules;
         $.get(url, function(data){
-            filetodownload = data.split('-');
-            // console.log(filetodownload);
-            host = filetodownload[1];
-            port = filetodownload[2];
-            filetodownload = filetodownload[0];
-            console.log(filetodownload);
-            console.log(`http://${host}:${port}/files/${filetodownload}`)
-            console.log(data);
             $("body").css("background-color", "orange");
             setTimeout(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 100)
         }).done(function(response){
-            console.log(response);
-            $("#printexcessiveHoursLink").attr("href", `http://${host}:${port}/download/${filetodownload}`);
+            filetodownload = response;
+            $("#printexcessiveHoursLink").attr("href", `${filetodownload}`);
             $("#printexcessiveHoursLink").css("display", "inline");
         });     
     });
@@ -160,63 +116,35 @@ $(function() {
         var y = (screen.height);
         $('.lightbox').css('display', 'inline').css('width', x).css('height', y);
         var monthForSchedules = $('#currentMonth').val();
-        console.log(monthForSchedules);
-        // $(this).css("display", "none")
-
         var url = '/reports/carerSchedules/' + monthForSchedules;
         $.get(url, function(data){
-            filetodownload = data.split('-');
-            console.log(filetodownload);
-
-            host = filetodownload[1];
-            port = filetodownload[2];
-            console.log(port);
-            filetodownload = filetodownload[0];
-            console.log(filetodownload);
-            console.log(`http://${host}:${port}/files/${filetodownload}`)
             $("body").css("background-color", "orange");
             setTimeout(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 250)
         }).done(function(response){
-                console.log("This is the response:",response);
                 setTimeout(function(){
-                    $("#printCarerSchedulesLink").attr("href", `http://${host}:${port}/download/${filetodownload}`);
+                    filetodownload = response;
+                    $("#printCarerSchedulesLink").attr("href", `${filetodownload}`);
                     $("#printCarerSchedulesLink").css("display", "inline");
                     $('.lightbox').css('display', 'none');
-                    //  $('#printCarerSchedules').css("display", "inline")
-
                 }, 6500);
-                 
-            
-            // $("#printCarerSchedulesLink").attr("href", `http://${host}:${port}/download/${filetodownload}`);
-            // $("#printCarerSchedulesLink").css("display", "inline");
           }).fail(function(response){
-            console.log(response);
           });      
     });
 
     $('#printcarerWages').click(function (e) { 
         e.preventDefault();
         var monthForSchedules = $('#currentMonth').val();
-        console.log(monthForSchedules);
         var url = '/reports/monthlywages/' + monthForSchedules;
         $.get(url, function(data){
-            filetodownload = data.split('-');
-            // console.log(filetodownload);
-            host = filetodownload[1];
-            port = filetodownload[2];
-            filetodownload = filetodownload[0];
-            console.log(filetodownload);
-            console.log(`http://${host}:${port}/files/${filetodownload}`)
-            console.log(data);
             $("body").css("background-color", "orange");
             setTimeout(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 100)
         }).done(function(response){
-            console.log(response);
-            $("#printcarerWagesLink").attr("href", `http://${host}:${port}/download/${filetodownload}`);
+            filetodownload = response;
+            $("#printcarerWagesLink").attr("href", `${filetodownload}`);
             $("#printcarerWagesLink").css("display", "inline");
         });     
     });
@@ -225,24 +153,15 @@ $(function() {
     $('#printmonthlySummary').click(function (e) { 
         e.preventDefault();
         var monthForSchedules = $('#currentMonth').val();
-        console.log(monthForSchedules);
         var url = '/reports/monthlysummary/' + monthForSchedules;
         $.get(url, function(data){
-            filetodownload = data.split('-');
-            // console.log(filetodownload);
-            host = filetodownload[1];
-            port = filetodownload[2];
-            filetodownload = filetodownload[0];
-            console.log(filetodownload);
-            console.log(`http://${host}:${port}/files/${filetodownload}`)
-            console.log(data);
             $("body").css("background-color", "orange");
             setTimeout(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 100)
         }).done(function(response){
-            console.log(response);
-            $("#printmonthlySummaryLink").attr("href", `http://${host}:${port}/download/${filetodownload}`);
+            filetodownload = response;
+            $("#printmonthlySummaryLink").attr("href", `${filetodownload}`);
             $("#printmonthlySummaryLink").css("display", "inline");
         });     
     });
@@ -250,33 +169,20 @@ $(function() {
     $('#printclientHours').click(function (e) { 
         e.preventDefault();
         var monthForSchedules = $('#currentMonth').val();
-        console.log(monthForSchedules);
         var url = '/reports/monthlybilling/' + monthForSchedules;
         $.get(url, function(data){
-            filetodownload = data.split('-');
-            // console.log(filetodownload);
-            host = filetodownload[1];
-            port = filetodownload[2];
-            filetodownload = filetodownload[0];
-            console.log(filetodownload);
-            console.log(`http://${host}:${port}/files/${filetodownload}`)
-            console.log(data);
             $("body").css("background-color", "orange");
             setTimeout(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 100)
         }).done(function(response){
-            console.log(response);
-            $("#printclientHoursLink").attr("href", `http://${host}:${port}/download/${filetodownload}`);
+            filetodownload = response;
+            $("#printclientHoursLink").attr("href", `${filetodownload}`);
             $("#printclientHoursLink").css("display", "inline");
         });     
     });
 
     $("#printCarerSchedulesLink, #printduplicateShiftsLink, #printmorethan24hrsLink, #printoverlappingShiftsLink, #printlongerThan12HoursShiftsLink, #printexcessiveHoursLink, #printcarerWagesLink, #printmonthlySummaryLink, #printclientHoursLink").click(function (e) { 
-        // e.preventDefault();
-        $(this).css("display", "none");
-        
-    });
-    
-    
+        $(this).css("display", "none");    
+    });  
 });

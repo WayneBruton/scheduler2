@@ -7,10 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
-  "author": "Digital Alchemy",
+  "author": "Eccentric Toad",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.1",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "chart.js": "^2.7.2",
     "cookie-parser": "^1.4.3",
@@ -26,5 +26,8 @@
     "mysql": "^2.16.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^6.1.0"
   }
 }

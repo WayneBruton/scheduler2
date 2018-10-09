@@ -276,3 +276,20 @@ upload the file somewhere with an API like: https://uploadcare.com/
 -- ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS 'Size (MB)' 
 -- FROM information_schema.TABLES 
 -- GROUP BY table_schema;
+
+
+
+// const connection = mysql.createConnection({
+//     host: 'localhost:3306',
+//     user: 'eccentri_root',
+//     database: 'eccentri_scheduler',
+//     password: '12071994Wb!@',
+//     multipleStatements: true //for more than one query in a get route
+// });
+// const connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     database: 'scheduler',
+//     password: '12071994W!',
+//     multipleStatements: true //for more than one query in a get route
+// });

@@ -4,14 +4,18 @@ const path = require('path');
 const app = express();
 var expressValidator = require('express-validator');
 var cookieParser = require('cookie-parser');
+require('dotenv/config');
 var connection = require('./routes/connection');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
+
 
 
 var session = require('express-session');
 var passport = require('passport');
 var MySQLStore = require('express-mysql-session')(session);
 var LocalStrategy = require('passport-local').Strategy;
+
+
 
 var clientRoutes        = require('./routes/clients'),
     dashboardRoutes      = require('./routes/dashboard'),
@@ -35,10 +39,11 @@ app.use("/public", express.static(path.join(__dirname, 'public')));
 
 
 var options = {
-    host: 'localhost',
-    user: 'root',
-    database: 'scheduler',
-    password: '12071994W!',
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    database: process.env.DATABASE_NAME,
+    password: process.env.DATABASE_PASSWORD,
+    // password: '12071994W!',
     multipleStatements: true //for more than one query in a get route
   };
   
@@ -47,7 +52,7 @@ var options = {
   
   
   app.use(session({
-    secret: '12fgsgsdfadfafafasfss',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     store: sessionStore,
     saveUninitialized: false
@@ -102,17 +107,9 @@ app.use(registerRoutes);
 
 
 // process.env.PORT
-app.listen(process.env.PORT, process.env.IP, function(){
+app.listen(3000, process.env.IP, function(){
     console.log(`Wayne's server started.....`);
 });
 
 
-
-// var options = {
-//   host: 'localhost:3306',
-//   user: 'eccentri_root',
-//   database: 'eccentri_scheduler',
-//   password: '12071994Wb!@',
-//   multipleStatements: true //for more than one query in a get route
-// };
 

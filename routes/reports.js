@@ -11,6 +11,7 @@ const  { authenticationMiddleware } = require('./middleware');
 router.get('/reports',authenticationMiddleware(), function(req, res){
     var viewjs = '../public/js/reports.js';
     var viewcss = '../public/styles/reports.css';
+    // var reportLocation
     res.render('reports', {viewjs: viewjs, viewcss: viewcss});
 });
 
@@ -18,6 +19,8 @@ router.get('/reports',authenticationMiddleware(), function(req, res){
 var reportData;
 var interimData;
 var myCSVData;
+var reportLocation = process.env.DATABASE_REPORTS;
+
 
 
 router.get('/reports/monthlybilling/:monthForSchedules', function(req,res){
@@ -45,7 +48,9 @@ router.get('/reports/monthlybilling/:monthForSchedules', function(req,res){
         var port = req.socket.localPort;
         var filename = `MonthlyBilling.csv`;
         var filepath = `./files/${filename}`;
-        var dataToSend = `${filename}-${host}-${port}`;
+        // var dataToSend = `${filename}~${host}~${port}`;
+        var dataToSend = `${reportLocation}${filename}`;
+        // var dataToSend = `${filename}`;
         myCSVData = []
         
         if (data.length === 0) {
@@ -84,34 +89,15 @@ router.get('/reports/monthlybilling/:monthForSchedules', function(req,res){
         };
         
         const fields = ['ClientType', 'ClientID', 'ClientLastName','ClientFirstName','ShiftStart', 'ShiftEnd', 'ShiftLength','payrollCode', 'EmployeeNumber', 'CarerLastName','CarerFirstName' ];
-        // const myCSVData = [
-        // {
-        //     "car": "Audi",
-        //     "price": 40000,
-        //     "color": "blue"
-        // }, {
-        //     "car": "BMW",
-        //     "price": 35000,
-        //     "color": "black"
-        // }, {
-        //     "car": "Porsche",
-        //     "price": 60000,
-        //     "color": "green"
-        // }
-        // ];
         const json2csvParser = new Json2csvParser({ fields });
         const csv = json2csvParser.parse(myCSVData);
-        // console.log(csv);
-        // var csv = json2csv({})
         fs.writeFile(filepath, csv, function(err) {
         if (err) throw err;
-        console.log(csv);
-        // res.send("done");
+
         });
 
         res.send(dataToSend);
         console.log('Created File!!'); 
-        // console.log('Report data - DONE:', reportData);
         
     })
 });
@@ -403,7 +389,8 @@ router.get('/reports/monthlysummary/:monthForSchedules', function(req,res){
         var host = req.hostname;
         var port = req.socket.localPort;
         var filename = `MonthlySummary.pdf`;
-        var dataToSend = `${filename}-${host}-${port}`     
+        // var dataToSend = `${filename}-${host}-${port}`     
+        var dataToSend = `${reportLocation}${filename}`     
         res.send(dataToSend);
         console.log('Created File!!'); 
         console.log('Report data - DONE:', reportData);
@@ -633,7 +620,9 @@ router.get('/reports/monthlywages/:monthForSchedules', function(req,res){
         var host = req.hostname;
         var port = req.socket.localPort;
         var filename = `CarerWages.pdf`;
-        var dataToSend = `${filename}-${host}-${port}`     
+        // var dataToSend = `${filename}-${host}-${port}`     
+        var dataToSend = `${reportLocation}${filename}`
+        console.log(dataToSend);     
         res.send(dataToSend);
         console.log('Created File!!'); 
         console.log('Report data - DONE:', reportData);
@@ -752,7 +741,8 @@ router.get('/reports/excessivehours/:monthForSchedules', function(req,res){
         var host = req.hostname;
         var port = req.socket.localPort;
         var filename = `Excessivehours.pdf`;
-        var dataToSend = `${filename}-${host}-${port}`     
+        // var dataToSend = `${filename}-${host}-${port}`     
+        var dataToSend = `${reportLocation}${filename}`     
         res.send(dataToSend);
         console.log('Created File!!'); 
         console.log(reportData);
@@ -889,7 +879,8 @@ router.get('/reports/longerthan12hourshifts/:monthForSchedules', function(req,re
         var host = req.hostname;
         var port = req.socket.localPort;
         var filename = `Longerthan12hourshifts.pdf`;
-        var dataToSend = `${filename}-${host}-${port}`     
+        // var dataToSend = `${filename}-${host}-${port}`     
+        var dataToSend = `${reportLocation}${filename}`     
         res.send(dataToSend);
         console.log('Created File!!'); 
         console.log(reportData);
@@ -1024,7 +1015,8 @@ router.get('/reports/overlappingshifts/:monthForSchedules', function(req,res){
         var host = req.hostname;
         var port = req.socket.localPort;
         var filename = `Overlappingshifts.pdf`;
-        var dataToSend = `${filename}-${host}-${port}`     
+        // var dataToSend = `${filename}-${host}-${port}`     
+        var dataToSend = `${reportLocation}${filename}`     
         res.send(dataToSend);
         console.log('Created File!!'); 
         console.log(reportData);
@@ -1149,7 +1141,8 @@ router.get('/reports/printmorethan24hrs/:monthForSchedules', function(req,res){
         var host = req.hostname;
         var port = req.socket.localPort;
         var filename = `Shiftdayslongerthan24hrs.pdf`;
-        var dataToSend = `${filename}-${host}-${port}`     
+        // var dataToSend = `${filename}-${host}-${port}`     
+        var dataToSend = `${reportLocation}${filename}`     
         res.send(dataToSend);
         console.log('Created File!!'); 
         console.log(reportData);
@@ -1217,10 +1210,11 @@ HAVING
    
         res.contentType('application/pdf');
         createDuplicateFile();
-        var host = req.hostname;
-        var port = req.socket.localPort;
+        // var host = req.hostname;
+        // var port = req.socket.localPort;
         var filename = `DuplicateShifts.pdf`;
-        var dataToSend = `${filename}-${host}-${port}`     
+        // var dataToSend = `${filename}-${host}-${port}`     
+        var dataToSend = `${reportLocation}${filename}`     
         res.send(dataToSend);
         console.log('Created File!!'); 
         console.log(reportData);
@@ -1605,7 +1599,8 @@ router.get('/reports/carerSchedules/:monthForSchedules', function(req, res){
                 var host = req.hostname;
                 var port = req.socket.localPort;
                 var filename = `CarerSchedules.pdf`;
-                var dataToSend = `${filename}-${host}-${port}`     
+                // var dataToSend = `${filename}-${host}-${port}`     
+                var dataToSend = `${reportLocation}${filename}`     
                 res.send(dataToSend);
                 console.log('Created File!!'); 
             }, 3500);

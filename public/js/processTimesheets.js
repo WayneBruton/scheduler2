@@ -6,7 +6,7 @@ $(function(){
 
     searchMonth = inputMonth;
 
-    //OPENING DEFAULTS    
+    //OPENING DEFAULTS     
 
     $("#inputMonth").val(inputMonth);
     $('#carerRadio').prop("checked", true);
@@ -288,6 +288,9 @@ $(function(){
   
    function deleteFile() {
         var file = filetodownload;
+        file = file.split('/');
+        file = file[file.length - 1];
+        console.log('This is the file',file);
         var url = '/remove/' + file;
 
         $.get(url,function(data){
@@ -308,7 +311,7 @@ $(function(){
         $(this).css("display", "none");
     });
 
-    var filetodownload = '';
+    // var filetodownload = '';
     var host = '';
     var port = '';
 
@@ -323,9 +326,10 @@ $(function(){
         var url = '/processVIPFile/' + dataProcess;
         $.get(url, function(data){
 
-            filetodownload = data.filename;
-            host = data.host;
-            port = data.port
+            // filetodownload = data.filename;
+            // host = data.host;
+            // port = data.port
+
 
     
             $("body").css("background-color", "orange");
@@ -333,8 +337,10 @@ $(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 250)
         }).done(function(response){
-            console.log("Success");
-            $("#openDownLoadFile").attr("href", `http://${host}:${port}/download/${filetodownload}`);
+            console.log('This is the response',response);
+            filetodownload = response;
+            $("#openDownLoadFile").attr("href", `${filetodownload}`);
+            // $("#openDownLoadFile").attr("href", `http://${host}:${port}/download/${filetodownload}`);
             $("#openDownLoadFile").css("display", "inline");
           }).fail(function(){
             console.log("Failed");

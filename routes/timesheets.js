@@ -1,12 +1,16 @@
 var express = require('express');
 var router = express.Router();
+require('dotenv/config');
+
 var connection = require('./connection');
 var fs = require('fs');
 const path = require('path');
 
 const  { authenticationMiddleware } = require('./middleware');
 
-//PROCESS TIMESHEETS
+var reportLocation = process.env.DATABASE_REPORTS;
+
+//PROCESS TIMESHEETS /processVIPFile/
 
 router.get('/processTimesheets',authenticationMiddleware(), function(req, res){
     var viewjs = '../public/js/processTimesheets.js';
@@ -111,12 +115,6 @@ router.get('/timesheetRetrieve/:searchMonth/:processedOrNot/:searchBy/:search', 
 
 router.get('/processVIPFile/:dataProcess', function(req, res){
     var period = req.params.dataProcess;
-    var host = req.hostname;
-    var port = req.socket.localPort;
-    console.log("Port is: " + port);
-    // console.log(period);
-    // console.log(Date.now());
-    // var start = Date.now();
     var sql = `select distinct carer_id, payrollCode, employee_number,  sum(timestampdiff(HOUR,shift_start, shift_end)) as hours, sum(timestampdiff(MINUTE,shift_start, shift_end)) as minutes from shifts`; 
     sql = sql + ` inner join carers on carers.id = carer_id`;
     sql = sql + ` where time_sheets_processed = true and  shift_month = '${period}'`;
@@ -126,7 +124,10 @@ router.get('/processVIPFile/:dataProcess', function(req, res){
         if (error) throw error;
         var wageFile = results;
         var filename = `${period}-${Date.now()}.txt`;
-        res.send({filename, host, port});
+        var datatosend = `${reportLocation}${filename}`
+        var filepath = `./files/${filename}`;
+        res.send(datatosend);
+
         // res.send(host);
         for (i = 0; i < wageFile.length; i++) {
             var st1 = 'D002$';
@@ -160,28 +161,23 @@ router.get('/processVIPFile/:dataProcess', function(req, res){
             }
             var st8 = 'Z';
             var fileInput = `${st1}${st2}${st3}${st4}${st5}${st6}${st7}${st8}`;
-            // console.log(fileInput);
             fs.appendFile(`./files/${filename}`,`${fileInput}\n`, function(){
-                // console.log("File Created");
             });
         }
     });
-    // console.log(Date.now());
-    // var end = Date.now();
-    // console.log("Milliseconds to process file = " + (end - start));
 });
 
 router.get('/download/:file(*)',(req, res) => {
     var file = req.params.file;
-    // console.log(file);
+    console.log(file);
     var fileLocation = path.join('./files',file);
-    // console.log(fileLocation);
     res.download(fileLocation, file); 
   });
 
   router.get('/remove/:file', (req, res) => {
     var file = req.params.file;
     console.log("==============");
+    console.log(file);
     var fileLocation = path.join('./files',file);
     console.log(fileLocation);
     var response = {
