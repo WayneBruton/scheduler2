@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-require('dotenv/config');
+// require('dotenv/config');
 // var moment = require('moment');
 var moment = require('moment-timezone');
 var connection = require('./connection');
