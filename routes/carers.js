@@ -81,7 +81,7 @@ router.post('/addNewCarer', function(req, res){
         rate_per_hour: req.body.ratePerHour
     } 
    
-        connection.query('INSERT INTO CARERS SET ?',carer, function (error, result) {
+        connection.query('INSERT INTO carers SET ?',carer, function (error, result) {
             if (error) throw error;
             res.redirect('/carers');
         });   
@@ -116,7 +116,7 @@ router.post('/editCarer', function(req, res){
     } 
     var id = req.body.id;
     console.log(carer);
-    connection.query(`UPDATE CARERS SET ? where ID = ${id}`,carer, function (error, result) {
+    connection.query(`UPDATE carers SET ? where ID = ${id}`,carer, function (error, result) {
         if (error) throw error;
         res.redirect('/carers');
     });

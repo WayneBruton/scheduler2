@@ -1,10 +1,15 @@
 var express = require('express');
 var router = express.Router();
-require('dotenv/config');
-
+// require('dotenv/config');
+// var moment = require('moment');
+var moment = require('moment-timezone');
 var connection = require('./connection');
 var fs = require('fs');
 const path = require('path');
+
+moment.tz.setDefault('Africa/Johannesburg');
+
+
 
 const  { authenticationMiddleware } = require('./middleware');
 
@@ -16,6 +21,7 @@ router.get('/processTimesheets',authenticationMiddleware(), function(req, res){
     var viewjs = '../public/js/processTimesheets.js';
     var viewcss = '../public/styles/processTimesheets.css';
     res.render('processTimesheets', {viewjs: viewjs, viewcss: viewcss});
+
 });
 
 router.get('/timesheetRetrieve/:searchMonth/:processedOrNot/:searchBy/:search', function(req, res){
@@ -29,13 +35,13 @@ router.get('/timesheetRetrieve/:searchMonth/:processedOrNot/:searchBy/:search', 
     }
     var sqlCount = `select count(*) as count from shifts where shift_month = '${shift_month}' and time_sheets_processed = false`;
     var sqlTotalTimeshheets = `select count(*) as count from shifts where shift_month = '${shift_month}'`;
-    // console.log(sqlCount);
     var sql = `select shifts.id as shiftId, shifts.client_id as clientId, clients.last_name as clientLastName, clients.first_name as clientFirstName, shifts.carer_id as carerId, carers.last_name as carerLastName, carers.first_name as carerFirstName, shift_month, shift_start, shift_end, time_sheets_processed, carers.employee_number as carerEmployeeNumber from shifts`;
     sql = sql + ` inner join clients on clients.id = client_id`; 
     sql = sql + ` inner join carers on carers.id = carer_id`;
     sql = sql + ` where time_sheets_processed = ${time_sheets_processed}`;
     sql = sql + ` and shift_month = '${shift_month}' and invoice_processed = false and wage_file_processed = false`
     var sql2 = '';
+    console.log(sql);
     if (searchBy === 'carers') {
         sql2 = ` and carers.last_name like '${searchStr}%' order by carers.last_name, carers.first_name, carers.employee_number, shift_start`;
     } else if (searchBy === 'clients') {
@@ -99,6 +105,38 @@ router.get('/timesheetRetrieve/:searchMonth/:processedOrNot/:searchBy/:search', 
         var overBilling = results[4];
         var longShifts = results[5];
         var overlaps = results[6];
+
+        var latestTimeSheets = [];
+
+        // console.log(timesheets);
+
+
+
+
+        // timesheets.forEach(function(timesheet){
+        //     var eachShift = {
+        //         shiftId: timesheet.shiftId,
+        //         clientId: timesheet.clientId,
+        //         clientLastName: timesheet.clientLastName,
+        //         clientFirstName: timesheet.clientFirstName,
+        //         carerId: timesheet.carerId,
+        //         carerLastName: timesheet.carerLastName,
+        //         carerFirstName: timesheet.carerFirstName,
+        //         shift_month: timesheet.shift_month,
+        //         shift_start: moment.tz(timesheet.shift_start, 'Africa/Johannesburg').format('YYYY-MM-DD HH:mm'),
+        //         shift_end: moment.tz(timesheet.shift_end,  'Africa/Johannesburg').format('YYYY-MM-DD HH:mm'),
+        //         time_sheets_processed: timesheet.time_sheets_processed,
+        //         carerEmployeeNumber: timesheet.carerEmployeeNumber }
+        //     latestTimeSheets.push(eachShift);
+        // });
+        // timesheets = latestTimeSheets;
+
+        
+
+
+        // console.log(moment.tz.guess());
+
+
         res.send({
             timesheets: timesheets, 
             processedCount: processedCount, 
@@ -108,7 +146,9 @@ router.get('/timesheetRetrieve/:searchMonth/:processedOrNot/:searchBy/:search', 
             longShifts: longShifts,
             overlaps: overlaps
         });
-        // console.log(processedCount[0].count);
+        // console.log(timesheets);
+        
+        
     });
     
 });
@@ -163,23 +203,24 @@ router.get('/processVIPFile/:dataProcess', function(req, res){
             var fileInput = `${st1}${st2}${st3}${st4}${st5}${st6}${st7}${st8}`;
             fs.appendFile(`./files/${filename}`,`${fileInput}\n`, function(){
             });
+            
         }
     });
 });
 
 router.get('/download/:file(*)',(req, res) => {
     var file = req.params.file;
-    console.log(file);
+    // console.log(file);
     var fileLocation = path.join('./files',file);
     res.download(fileLocation, file); 
   });
 
   router.get('/remove/:file', (req, res) => {
     var file = req.params.file;
-    console.log("==============");
-    console.log(file);
+    // console.log("==============");
+    // console.log(file);
     var fileLocation = path.join('./files',file);
-    console.log(fileLocation);
+    // console.log(fileLocation);
     var response = {
         success : 'File Destroyed',
         failure: 'There was a problem'
@@ -205,11 +246,11 @@ router.post('/timesheetsReceived', function(req, res){
         success : 'Timesheet processed',
         failure: 'There was a problem'
     }
-    var sql = `UPDATE SHIFTS SET shift_start = '${shift_start}', shift_end = '${shift_end}', time_sheets_processed = ${processed} where id = ?`;
+    var sql = `UPDATE shifts SET shift_start = '${shift_start}', shift_end = '${shift_end}', time_sheets_processed = ${processed} where id = ?`;
     connection.query(sql ,id , function (error, result) {
-        // if (error) throw error;
         if (error) {
-            res.end(JSON.stringify(response.failure));    
+            // res.end(JSON.stringify(response.failure));    
+            res.end(JSON.stringify(error));    
         }
         res.end(JSON.stringify(response.success));
     }); 
@@ -217,14 +258,14 @@ router.post('/timesheetsReceived', function(req, res){
 
 router.delete('/deleteTimesheetsAllocated', function(req, res){
     var id = req.body.dataToDelete[0];
-    console.log(id);
+    // console.log(id);
 
     var response = {
         success : 'Timesheet Deleted',
         failure: 'There was a problem'
     }
 
-    var sql = `DELETE FROM SHIFTS WHERE (ID) = ?`;
+    var sql = `DELETE FROM shifts WHERE (ID) = ?`;
     connection.query(sql,id, function (error, results, fields) {
         // if (error) throw error;
         if (error) {

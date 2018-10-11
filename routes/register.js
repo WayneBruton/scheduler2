@@ -50,7 +50,7 @@ router.post('/register', function(req, res, next) {
         // console.log(email);
         // console.log(password);
 
-        var sql = `INSERT INTO USERS (username, email, password) values (? , ? , ?)`;
+        var sql = `INSERT INTO users (username, email, password) values (? , ? , ?)`;
 
         bcrypt.hash(password, saltRounds, function(err, hash) {
                 // console.log(hash);

@@ -246,3 +246,11 @@ width: 7.5rem;
   }
 }
 
+hr {
+  margin-top: 1.5rem;
+  height: 5px;
+  width: 41.5rem;
+  margin-left: 17.5rem;
+  background-color: blue;
+}
+

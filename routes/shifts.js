@@ -37,7 +37,7 @@ router.post('/postshifts', function(req, res){
         success : 'New shifts added!',
         failure: 'There was a problem'
     }
-    var sql = 'INSERT INTO SHIFTS (shift_schedule_id,client_id,carer_id,shift_month,shift_type,shift_start,shift_end, payrollCode) VALUES ?';
+    var sql = 'INSERT INTO shifts (shift_schedule_id,client_id,carer_id,shift_month,shift_type,shift_start,shift_end, payrollCode) VALUES ?';
     connection.query(sql ,[data], function (error, result) {
         // if (error) throw error;
         // console.log(sql);
@@ -83,7 +83,7 @@ router.delete('/deleteshifts', function(req, res){
         failure: 'There was a problem'
     }
 
-    var sql = `DELETE FROM SHIFTS WHERE ID IN (${shift})`;
+    var sql = `DELETE FROM shifts WHERE ID IN (${shift})`;
     connection.query(sql, function (error, results, fields) {
         if (error) {
             res.end(JSON.stringify(response.failure)); 

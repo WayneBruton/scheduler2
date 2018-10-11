@@ -81,7 +81,7 @@ router.post('/addNewClient', function(req, res){
         email: req.body.email,
         client_type: req.body.clientType
     } 
-    connection.query('INSERT INTO CLIENTS SET ?',client, function (error, result) {
+    connection.query('INSERT INTO clients SET ?',client, function (error, result) {
         if (error) throw error;
         res.redirect('/clients');
     });
@@ -123,7 +123,7 @@ router.post('/editClient', function(req, res){
     } 
     var id = req.body.id;
     console.log(client);
-    connection.query(`UPDATE CLIENTS SET ? where ID = ${id}`,client, function (error, result) {
+    connection.query(`UPDATE clients SET ? where ID = ${id}`,client, function (error, result) {
         if (error) throw error;
         res.redirect('/clients');
     });

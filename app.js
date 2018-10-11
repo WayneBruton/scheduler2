@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 var expressValidator = require('express-validator');
 var cookieParser = require('cookie-parser');
-require('dotenv/config');
+// require('dotenv/config');
 var connection = require('./routes/connection');
 var bcrypt = require('bcryptjs');
 
@@ -107,7 +107,7 @@ app.use(registerRoutes);
 
 
 // process.env.PORT
-app.listen(3000, process.env.IP, function(){
+app.listen(process.env.PORT, process.env.IP, function(){
     console.log(`Wayne's server started.....`);
 });
 

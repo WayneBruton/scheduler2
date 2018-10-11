@@ -5,6 +5,9 @@ $(function(){
     var search = '&&';//String to search for
 
     searchMonth = inputMonth;
+    moment.tz.setDefault('Africa/Johannesburg');
+    // console.log(moment.tz.setDefault('Africa/Johannesburg'));
+    console.log(moment.tz.guess());
 
     //OPENING DEFAULTS     
 
@@ -135,17 +138,25 @@ $(function(){
         dataToPost.push(shift_end);
         dataToPost.push(toProcess);
 
+        console.log(dataToPost);
+
         var url = '/timesheetsReceived';
+
         $.ajax({ 
             type: 'POST', 
             url: url, 
             data:  { dataToPost } , 
             dataType: 'json'
           }).done(function(response){
+              console.log(response);
           }).fail(function(response){
+            console.log(response);
+
           });
           getTimesheets();    
     });
+
+
 
     $("#timesheetData").on("click", ".deleteBtn", function (e) {
         e.preventDefault();
@@ -176,6 +187,8 @@ $(function(){
         const url = '/timesheetRetrieve/' + searchMonth + '/' + processedOrNot + '/' + searchBy + '/' + search;
         $.get(url, function(data){
             $('#timesheetData').empty();
+            // data = data.timesheets;
+            // console.log(data.timesheets);
             data2 = data.processedCount;
             data3 = data.totalTimesheets;
             data4 = data.duplicates;
@@ -252,13 +265,22 @@ $(function(){
 
 
             data = data.timesheets;
+            
  
 
             $.each(data, function (index, value) { 
+                // console.log(data.timesheets);
+                // const startDate = moment.tz((this.shift_start), "Africa/Johannesburg").format("YYYY-MM-DD");
                 const startDate = moment(this.shift_start).format("YYYY-MM-DD");
-                const startTime = moment(this.shift_start).format("HH:mm:ss");
+   
+                
+                const startTime = moment(this.shift_start).format("HH:mm");
                 const endDate = moment(this.shift_end).format("YYYY-MM-DD");
-                const endTime = moment(this.shift_end).format("HH:mm:ss");
+                const endTime = moment(this.shift_end).format("HH:mm");
+                // const startTime = moment.tz(this.shift_start, "Africa/Johannesburg").format("HH:mm:ss");
+                // const endDate = moment.tz(this.shift_end, "Africa/Johannesburg").format("YYYY-MM-DD");
+                // const endTime = moment.tz(this.shift_end, "Africa/Johannesburg").format("HH:mm:ss");
+                // console.log(endTime);
                 var input =  `Client:  ${this.clientId} - ${this.clientFirstName} : ${this.clientLastName} `;                   
                 input =  input + ` | Carer: EE Num: ${this.carerEmployeeNumber} - ${this.carerFirstName} : ${this.carerLastName}`;
                 var timesheetAdd = `<div class="timesheet-li-div"><form action="" method=""><li class="timesheet-li"> ${input} </li>`;
@@ -290,7 +312,7 @@ $(function(){
         var file = filetodownload;
         file = file.split('/');
         file = file[file.length - 1];
-        console.log('This is the file',file);
+        // console.log('This is the file',file);
         var url = '/remove/' + file;
 
         $.get(url,function(data){
@@ -337,7 +359,7 @@ $(function(){
                 $("body").css("background-color", "#DDDDDD");
             }, 250)
         }).done(function(response){
-            console.log('This is the response',response);
+            // console.log('This is the response',response);
             filetodownload = response;
             $("#openDownLoadFile").attr("href", `${filetodownload}`);
             // $("#openDownLoadFile").attr("href", `http://${host}:${port}/download/${filetodownload}`);

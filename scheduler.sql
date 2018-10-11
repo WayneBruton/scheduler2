@@ -22,7 +22,7 @@ INSERT INTO client_type (client_type_description, client_rate, rate_per_hour_day
 ('CCP-12', 513.85, 'Daily' ),
 ('CCP-24', 742.64, 'Daily'),
 ('AIB', 42.82, 'Hourly'),
-('Package', 27667.48, 'Monthly')
+('Package', 27667.48, 'Monthly');
 
 create table clients (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,11 +50,11 @@ create table carers (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-alter table carers modify email varchar(150) NOT UNIQUE NOT NULL default 'no email'
 
 
 
--- 'shift_start', 'timestamp', 'NO', '', 'CURRENT_TIMESTAMP', 'on update CURRENT_TIMESTAMP'
+
+
 
 
 create table shifts (
@@ -75,10 +75,11 @@ create table shifts (
     FOREIGN KEY(carer_id) REFERENCES carers(id)
 );
 
--- alter table shifts add payrollCode VARCHAR(3) NOT NULL DEFAULT '000'
+
+
 
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO'; 
--- Cannot have null value for TIMESTAMP --- NNNNB
+
 
 ALTER TABLE shifts
      CHANGE shift_start
@@ -100,10 +101,42 @@ ALTER TABLE publicHolidays
             publicHolidayDate TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00';
 
 
+INSERT INTO publicHolidays (publicHolidayDate, publicHolidayDescription ) values 
+
+('2018-01-01',"New Year's Day"),
+('2018-03-21',"Human Rights Day"),
+('2018-03-30',"Good Friday"),
+('2018-04-02',"Family Day"),
+('2018-04-27',"Freedom Day"),
+('2018-05-01',"Workers' Day"),
+('2018-06-16',"Youth Day"),
+('2018-08-09',"National Women's Day"),
+('2018-09-24',"Heritage Day"),
+('2018-12-16',"Day of Reconciliation"),
+('2018-12-17',"Day of Reconciliation Holiday"),
+('2018-12-25',"Christmas Day"),
+('2018-12-26',"Day of Goodwill"),
+('2019-01-01',"New Year's Day"),
+('2019-03-21',"Human Rights Day"),
+('2019-04-19',"Good Friday"),
+('2019-04-22',"Family Day"),
+('2019-04-27',"Freedom Day"),
+('2019-05-01',"Workers' Day"),
+('2019-06-16',"Youth Day"),
+('2019-06-17',"Youth Day Holiday"),
+('2019-08-09',"National Women's Day"),
+('2019-09-24',"Heritage Day"),
+('2019-12-16',"Day of Reconciliation"),
+('2019-12-25',"Christmas Day"),
+('2019-12-26',"Day of Goodwill");
 
 
 
 
+
+
+
+alter table carers modify email varchar(150) NOT UNIQUE NOT NULL default 'no email';
 -- DUPLICATE SHIFTS
 
 SELECT 
@@ -238,34 +271,7 @@ join client_type ct on cl.client_type = ct.id
 where shift_month = '2018-08'
 group by ct.client_type_description
 
-INSERT INTO publicHolidays (publicHolidayDate, publicHolidayDescription ) values 
 
-('2018-01-01',"New Year's Day"),
-('2018-03-21',"Human Rights Day"),
-('2018-03-30',"Good Friday"),
-('2018-04-02',"Family Day"),
-('2018-04-27',"Freedom Day"),
-('2018-05-01',"Workers' Day"),
-('2018-06-16',"Youth Day"),
-('2018-08-09',"National Women's Day"),
-('2018-09-24',"Heritage Day"),
-('2018-12-16',"Day of Reconciliation"),
-('2018-12-17',"Day of Reconciliation Holiday"),
-('2018-12-25',"Christmas Day"),
-('2018-12-26',"Day of Goodwill"),
-('2019-01-01',"New Year's Day"),
-('2019-03-21',"Human Rights Day"),
-('2019-04-19',"Good Friday"),
-('2019-04-22',"Family Day"),
-('2019-04-27',"Freedom Day"),
-('2019-05-01',"Workers' Day"),
-('2019-06-16',"Youth Day"),
-('2019-06-17',"Youth Day Holiday"),
-('2019-08-09',"National Women's Day"),
-('2019-09-24',"Heritage Day"),
-('2019-12-16',"Day of Reconciliation"),
-('2019-12-25',"Christmas Day"),
-('2019-12-26',"Day of Goodwill")
 
 
 select * from publicHolidays where DAYOFWEEK(publicHolidayDate) != 1 and MONTH(publicHolidayDate) = 9 and YEAR(publicHolidayDate) = 2018
