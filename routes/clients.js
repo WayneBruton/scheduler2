@@ -18,9 +18,11 @@ router.get('/clients',authenticationMiddleware(), function(req, res){
         var viewcss = '../public/styles/clients.css';
         res.render('clients', {clients: clients,viewjs: viewjs, viewcss: viewcss});
     });
+    // connection.end();
 });
 
 router.get('/clients/:page/:activeOrNot', function(req, res){
+    // connection.resume();
     var x = req.params.page;
     var activeOrNot = req.params.activeOrNot;
     var offset = x * 12;
@@ -37,6 +39,8 @@ router.get('/clients/:page/:activeOrNot', function(req, res){
     }
      
 });
+    
+   
 
 //Search for clients
 
@@ -96,24 +100,29 @@ router.get('/getClientTypes', function(req, res){
 
 });
 
+
+var clientReturned;
+// router.get('/getclient', function(req, res){
 router.get('/getclient/:clientID', function(req, res){
     client = req.params.clientID;
-    // var offset = 0;
-    // console.log(client);
-    var q = `Select * from clients WHERE ID = ${client}`;
-    connection.query(q, function (error, results, fields) {
+    var sql = `select cl.id, cl.first_name, cl.last_name, cl.email, cl.client_type, ct.client_type_description, 
+                cl.active, cl.activity_reason from clients cl 
+                 inner join client_type  ct on ct.id = cl.client_type
+                `;
+                // where cl.id = ${client}`;
+    connection.query(sql, function (error, results, fields) {
         if (error) throw error;
-        var clientReturned = results;
-        // res.render('carers', {carers: carer});
-        res.send(clientReturned);
-        // console.log(clientReturned);
+        clientReturned = results;
+        console.log(clientReturned);
+        res.send({ clientReturned: clientReturned }); 
     });
-    // console.log(carerReturned);
+    // connection.release();
+   
 });
 
 router.post('/editClient', function(req, res){
+    
     var client = {
-        // id: req.body.id,
         last_name: req.body.lastName,
         first_name: req.body.firstName,
         email: req.body.email,
@@ -125,7 +134,7 @@ router.post('/editClient', function(req, res){
     console.log(client);
     connection.query(`UPDATE clients SET ? where ID = ${id}`,client, function (error, result) {
         if (error) throw error;
-        res.redirect('/clients');
+        res.redirect('/clients');  
     });
 });
 

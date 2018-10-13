@@ -195,6 +195,7 @@ $(function(){
             data5 = data.overBilling;
             data6 = data.longShifts;
             data7 = data.overlaps;
+            console.log('processed count',data2);
             var duplicateText = data4.length;
             var overBillingText = data5.length;
             var longShiftsText = data6.length;
@@ -301,6 +302,7 @@ $(function(){
                 }
                 timesheetAdd = $(timesheetAdd);
                 timesheetAdd.appendTo('#timesheetData');
+                
             });
 
         });

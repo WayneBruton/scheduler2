@@ -6,26 +6,21 @@ const  { authenticationMiddleware } = require('./middleware');
 
 
 router.get('/shifts',authenticationMiddleware(), function(req, res){
-    // var queryClients = 'Select * from clients WHERE ACTIVE = true ORDER BY LAST_NAME';
     var queryClients = `select cl.id, last_name,first_name, ct.client_type_description as cType from clients cl
     join
     client_type  ct on cl.client_type = ct.id
     where active = true
     order by last_name`;
     var queryCarers = 'Select * from carers WHERE ACTIVE = true ORDER BY LAST_NAME';
-    // var queryPublicHolidays = 'select * from publicHolidays where DAYOFWEEK(publicHolidayDate) != 1';
     var sql = `${queryClients};${queryCarers}`;
     connection.query(sql, function (error, results, fields) {
         if (error) throw error;
         var clients = results[0];
         var carers = results[1];
-        // var view = 'Shift';
         var viewjs = '../public/js/shifts.js';
         var viewcss = '../public/styles/shifts.css';
         console.log(viewjs);
-        // var pholiday = results[2];
         res.render('shifts', {clients: clients, carers: carers, viewjs: viewjs, viewcss: viewcss});
-        // res.send({view: view});
     });
 });
 

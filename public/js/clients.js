@@ -249,55 +249,111 @@ $(function() {
 
     var clientID;
 
+    // function resetForm() {
+    //     // $('#modalform')[0].reset(); 
+    //     document.getElementById("modalform").reset();  
+    // }
+
+    // $('#editNewClient').submit(function (e) { 
+    //     e.preventDefault();
+    //     this.submit();
+    //     $("#modalform").trigger("reset");
+    //     // $('#modalform').empty();
+
+    //     // setTimeout(function(){
+    //     //     resetForm();
+    //     //   });   
+    // });
+
+    
+
     $('#clientData').on("click",".edit-btn",function(e){
+        // modalform
+        
         clientID = $(this).attr('id');
-
-        e.preventDefault();
-        var x = (screen.width);
-        var y = (screen.height)
-        var swidth = (screen.width) * .6; 
-        var sheight = (screen.height) * .6;
-        var newTop = (y - sheight)/2;
-        var newLeft = (x - swidth)/2;
-        var newMargin = (swidth - 300)/2;
-        $(".lightbox1").fadeIn().css("width", x).css("height", y);
-        $(".lightboxA1").css("width",swidth).css("height", sheight).css("top", newTop).css("left", newLeft);
-        $('.lightboxA1').fadeIn().css("display", "flex").css("align-items", "center").css("align-content", "space-around");
-        $(".inputData1").css("margin-left", newMargin);
-        getClientType();
-        var url = '/getclient/' + clientID;
-        $.get(url, function(data){
+            e.preventDefault();
+            var x = (screen.width);
+            var y = (screen.height)
+            var swidth = (screen.width) * .6; 
+            var sheight = (screen.height) * .6;
+            var newTop = (y - sheight)/2;
+            var newLeft = (x - swidth)/2;
+            var newMargin = (swidth - 300)/2;
+            $(".lightbox1").fadeIn().css("width", x).css("height", y);
+            $(".lightboxA1").css("width",swidth).css("height", sheight).css("top", newTop).css("left", newLeft);
+            $('.lightboxA1').fadeIn().css("display", "flex").css("align-items", "center").css("align-content", "space-around");
+            $(".inputData1").css("margin-left", newMargin);
+            // resetForm();
             editData = [];//clears edit query
-            editData.push(data[0]);
-            // getClientType();
-            fillEditInputs();
+            clientType = [];
+            // $('.inputDataFields1 :input').val("")
+            clearClientType();
+            // $('.inputDataFields1 > select').css({"color": "red"});
+            $('#editClientType').empty();
+            var url = '/getclient/' + clientID;
+            // var url = '/getclient';
+            var url2 = '/getClientTypes';
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    editData = data.clientReturned; 
+                    var foundClient = editData.find(function(client){
+                        return client.id === parseInt(clientID);
+                    }) ;
+                    editData = [];
+                    editData.push(foundClient);
+                    console.log(editData);
+                    
+                })
+                // .then(function(){
+                //     fetch(url2)
+                // }).then(function(){
 
-            
+                // })
+                
+
+
+            // $.get(url, function(data){  
+            //     editData = data.clientReturned;  
+            //     // console.log(clientID);
+            //     var foundClient = editData.find(function(client){
+            //         return client.id === parseInt(clientID);
+            //     }) ;
+            //     editData = [];
+            //     editData.push(foundClient);
+            // })
+            .then(function(){
+                $.get(url2, function(data){  
+                    clientTypes = data;   
+                }).then(function(){
+                    fillEditInputs();
+                    console.log("Success");
+                }).then(function(){
+                    editData = [];
+                    clientTypes = [];
+                })
+                .catch(function(){
+                    console.log("Some Issue Here");
+                });
+            });       
         });
-        // getClientType();
-    });
 
-    function getClientType() {
-        $('#editClientType').empty();
-        const url = '/getClientTypes';
-        $.get(url, function(data){
-            $(`<option value="">--Please choose an option--</option>`).appendTo('#editClientType');
-            $.each(data, function (i, val) { 
-                 val = data[i].id;
-                 const text = data[i].client_type_description;
-
-                 $(`<option value="${val}">${text}</option>`).appendTo('#editClientType');
-            });
-            var v = $('#editClientType').val();
-
-        });
-
-    }
 
     var editData = [];//clears edit query
+    var clientTypes = [];//clears clientType
 
-    function fillEditInputs() {
-        // getClientType();
+    function clearClientType() {
+        $('#editClientType').empty();
+    }
+
+
+    function fillEditInputs() {  
+        clientTypes.forEach(function(clientType){
+                val = clientType.id
+                const text = clientType.client_type_description;
+                $(`<option value="${val}">${text}</option>`).appendTo('#editClientType');
+        });
+ 
         $("#client-id").val(editData[0].id);
         $("#editLastName").val(editData[0].last_name);
         $("#editFirstName").val(editData[0].first_name);
@@ -314,7 +370,7 @@ $(function() {
         $("#activeChecked1").val(0);
         $("#isActive").val(0)
         $("#inactivityReason").val(editData[0].activity_reason);
-        }
+        }     
     }
 
     $("#editLastName,#editFirstName,#editEmail,#editEENumber").focusout(function (e) { 
