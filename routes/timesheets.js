@@ -3,7 +3,7 @@ var router = express.Router();
 require('dotenv/config');
 // var moment = require('moment');
 var moment = require('moment-timezone');
-var connection = require('./connection');
+var pool = require('./connection');
 var fs = require('fs');
 const path = require('path');
 
@@ -96,61 +96,37 @@ router.get('/timesheetRetrieve/:searchMonth/:processedOrNot/:searchBy/:search', 
 
 
     var finalSQL = `${sql};${sqlCount};${sqlTotalTimeshheets};${sqlDuplicates};${sqlOver24hrs};${sqlLongShifts};${sqlOverlappingShifts}`
-    connection.query(finalSQL, function (error, results, fields) {
-        if (error) throw error;
-        var timesheets = results[0];
-        var processedCount = results[1];
-        var totalTimesheets = results[2];
-        var duplicates = results[3];
-        var overBilling = results[4];
-        var longShifts = results[5];
-        var overlaps = results[6];
-
-        var latestTimeSheets = [];
-
-        // console.log(timesheets);
-
-
-
-
-        // timesheets.forEach(function(timesheet){
-        //     var eachShift = {
-        //         shiftId: timesheet.shiftId,
-        //         clientId: timesheet.clientId,
-        //         clientLastName: timesheet.clientLastName,
-        //         clientFirstName: timesheet.clientFirstName,
-        //         carerId: timesheet.carerId,
-        //         carerLastName: timesheet.carerLastName,
-        //         carerFirstName: timesheet.carerFirstName,
-        //         shift_month: timesheet.shift_month,
-        //         shift_start: moment.tz(timesheet.shift_start, 'Africa/Johannesburg').format('YYYY-MM-DD HH:mm'),
-        //         shift_end: moment.tz(timesheet.shift_end,  'Africa/Johannesburg').format('YYYY-MM-DD HH:mm'),
-        //         time_sheets_processed: timesheet.time_sheets_processed,
-        //         carerEmployeeNumber: timesheet.carerEmployeeNumber }
-        //     latestTimeSheets.push(eachShift);
-        // });
-        // timesheets = latestTimeSheets;
-
-        
-
-
-        // console.log(moment.tz.guess());
-
-
-        res.send({
-            timesheets: timesheets, 
-            processedCount: processedCount, 
-            totalTimesheets: totalTimesheets, 
-            duplicates: duplicates,
-            overBilling: overBilling,
-            longShifts: longShifts,
-            overlaps: overlaps
-        });
-        // console.log(timesheets);
-        
-        
-    });
     
+    pool.getConnection(function(err, connection){
+        if (err) {
+            connection.release();
+            resizeBy.send('Error with connection');
+          }
+          connection.query(finalSQL, function (error, results, fields) {
+            if (error) throw error;
+            var timesheets = results[0];
+            var processedCount = results[1];
+            var totalTimesheets = results[2];
+            var duplicates = results[3];
+            var overBilling = results[4];
+            var longShifts = results[5];
+            var overlaps = results[6];
+    
+            var latestTimeSheets = [];
+    
+            res.send({
+                timesheets: timesheets, 
+                processedCount: processedCount, 
+                totalTimesheets: totalTimesheets, 
+                duplicates: duplicates,
+                overBilling: overBilling,
+                longShifts: longShifts,
+                overlaps: overlaps
+            });
+            // console.log(timesheets);  
+        });
+        connection.release();
+    });
 });
 
 router.get('/processVIPFile/:dataProcess', function(req, res){
@@ -160,52 +136,61 @@ router.get('/processVIPFile/:dataProcess', function(req, res){
     sql = sql + ` where time_sheets_processed = true and  shift_month = '${period}'`;
     sql = sql + ` group by carer_id, payrollCode`;
 
-    connection.query(sql, function (error, results, fields) {
-        if (error) throw error;
-        var wageFile = results;
-        var filename = `${period}-${Date.now()}.txt`;
-        var datatosend = `${reportLocation}${filename}`
-        var filepath = `./files/${filename}`;
-        res.send(datatosend);
-
-        // res.send(host);
-        for (i = 0; i < wageFile.length; i++) {
-            var st1 = 'D002$';
-            var st2 =  wageFile[i].employee_number;
-            var st3 = '     ';
-            var st4 = wageFile[i].payrollCode;
-            var st5 = '         ';
-            if (wageFile[i].employee_number.length === 3) {
-                st2 = st2;
-            } else if (wageFile[i].employee_number.length === 2) {
-                st2 = `0${st2}`;
-            } else if (wageFile[i].employee_number.length === 1) {
-                st2 = `00${st2}`;
+    pool.getConnection(function(err, connection){
+        if (err) {
+            connection.release();
+            resizeBy.send('Error with connection');
+          }
+          connection.query(sql, function (error, results, fields) {
+            if (error) throw error;
+            var wageFile = results;
+            var filename = `${period}-${Date.now()}.txt`;
+            var datatosend = `${reportLocation}${filename}`
+            var filepath = `./files/${filename}`;
+            res.send(datatosend);
+    
+            // res.send(host);
+            for (i = 0; i < wageFile.length; i++) {
+                var st1 = 'D002$';
+                var st2 =  wageFile[i].employee_number;
+                var st3 = '     ';
+                var st4 = wageFile[i].payrollCode;
+                var st5 = '         ';
+                if (wageFile[i].employee_number.length === 3) {
+                    st2 = st2;
+                } else if (wageFile[i].employee_number.length === 2) {
+                    st2 = `0${st2}`;
+                } else if (wageFile[i].employee_number.length === 1) {
+                    st2 = `00${st2}`;
+                }
+                if ((wageFile[i].minutes - (wageFile[i].hours * 60)) === 0 ) {
+                    var min = '00';
+                } else {
+                    var min = (wageFile[i].minutes - (wageFile[i].hours * 60));
+                };
+                var timeLen = 12;
+                var totaltime = `${wageFile[i].hours}${min}+`;
+                var zeroforTime = timeLen - totaltime.length;
+                var st6 = '';
+                for (y = 0; y < zeroforTime; y++) {
+                    st6 += '0';
+                }
+                st6 = st6 + totaltime;
+                var st7 = ''
+                for (x = 0; x < 61; x++) {
+                    st7 += ' ';
+                }
+                var st8 = 'Z';
+                var fileInput = `${st1}${st2}${st3}${st4}${st5}${st6}${st7}${st8}`;
+                fs.appendFile(`./files/${filename}`,`${fileInput}\n`, function(){
+                });
+                
             }
-            if ((wageFile[i].minutes - (wageFile[i].hours * 60)) === 0 ) {
-                var min = '00';
-            } else {
-                var min = (wageFile[i].minutes - (wageFile[i].hours * 60));
-            };
-            var timeLen = 12;
-            var totaltime = `${wageFile[i].hours}${min}+`;
-            var zeroforTime = timeLen - totaltime.length;
-            var st6 = '';
-            for (y = 0; y < zeroforTime; y++) {
-                st6 += '0';
-            }
-            st6 = st6 + totaltime;
-            var st7 = ''
-            for (x = 0; x < 61; x++) {
-                st7 += ' ';
-            }
-            var st8 = 'Z';
-            var fileInput = `${st1}${st2}${st3}${st4}${st5}${st6}${st7}${st8}`;
-            fs.appendFile(`./files/${filename}`,`${fileInput}\n`, function(){
-            });
-            
-        }
+        });
+        connection.release();
     });
+    
+    
 });
 
 router.get('/download/:file(*)',(req, res) => {
@@ -247,13 +232,21 @@ router.post('/timesheetsReceived', function(req, res){
         failure: 'There was a problem'
     }
     var sql = `UPDATE shifts SET shift_start = '${shift_start}', shift_end = '${shift_end}', time_sheets_processed = ${processed} where id = ?`;
-    connection.query(sql ,id , function (error, result) {
-        if (error) {
-            // res.end(JSON.stringify(response.failure));    
-            res.end(JSON.stringify(error));    
-        }
-        res.end(JSON.stringify(response.success));
-    }); 
+    
+    pool.getConnection(function(err, connection){
+        if (err) {
+            connection.release();
+            resizeBy.send('Error with connection');
+          }
+          connection.query(sql ,id , function (error, result) {
+            if (error) {
+                // res.end(JSON.stringify(response.failure));    
+                res.end(JSON.stringify(error));    
+            }
+            res.end(JSON.stringify(response.success));
+        }); 
+        connection.release();
+    });  
 });
 
 router.delete('/deleteTimesheetsAllocated', function(req, res){
@@ -266,13 +259,21 @@ router.delete('/deleteTimesheetsAllocated', function(req, res){
     }
 
     var sql = `DELETE FROM shifts WHERE (ID) = ?`;
-    connection.query(sql,id, function (error, results, fields) {
-        // if (error) throw error;
-        if (error) {
-            res.end(JSON.stringify(response.failure));    
-        }
-        res.end(JSON.stringify(response.success));
-    });
+    
+    pool.getConnection(function(err, connection){
+        if (err) {
+            connection.release();
+            resizeBy.send('Error with connection');
+          }
+          connection.query(sql,id, function (error, results, fields) {
+            // if (error) throw error;
+            if (error) {
+                res.end(JSON.stringify(response.failure));    
+            }
+            res.end(JSON.stringify(response.success));
+        });
+        connection.release();
+    });   
 });
 
 

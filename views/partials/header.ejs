@@ -10,6 +10,7 @@
     <script src="../public/js/moment-timezone-with-data.js"></script>
     <script src="../../public/js/logoutauto.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <link rel="stylesheet" href="../../public/styles/header.css">
     <script class="script" src="<%= viewjs %>"></script>
     <link rel="stylesheet" href="<%= viewcss %>">
     <!-- <script class="script" src="../../public/js/shifts.js"></script> -->
@@ -19,7 +20,7 @@
 </head>
 <body>
 
-<header>
+<header class="sticky">
     <h2 ><a href="/"><i class="fas fa-phone-slash"></i>Carer Agency</a> </h2>
     <nav>
         <% if (viewjs === '../public/js/admin.js') { %>

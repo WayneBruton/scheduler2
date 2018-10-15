@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('./connection');
+var pool = require('./connection');
 var expressValidator = require('express-validator');
 
 
@@ -54,20 +54,28 @@ router.post('/register', function(req, res, next) {
 
         bcrypt.hash(password, saltRounds, function(err, hash) {
                 // console.log(hash);
-
-                connection.query(sql, [username, email, hash] , function(error, results, fields){
-                    if (error) throw error;
-                    connection.query('SELECT LAST_INSERT_ID() AS user_id', function(error, results, fields){
-                      if (error) throw error;
-          
-                      const user_id = results[0];
-                      console.log(user_id);
-                      req.login(user_id, function(err){
-                        res.redirect('/admin');
-                      })
-          
+                pool.getConnection(function(err, connection){
+                    if (err) {
+                        connection.release();
+                        resizeBy.send('Error with connection');
+                      }
+                      connection.query(sql, [username, email, hash] , function(error, results, fields){
+                        if (error) throw error;
+                        connection.query('SELECT LAST_INSERT_ID() AS user_id', function(error, results, fields){
+                          if (error) throw error;
+              
+                          const user_id = results[0];
+                          console.log(user_id);
+                          req.login(user_id, function(err){
+                            res.redirect('/admin');
+                          })
+              
+                        });
                     });
+                   connection.release(); 
+
                 });
+                
         });
     }
 });
@@ -92,6 +100,8 @@ router.post('/login', passport.authenticate('local', {
   }));
 
   router.get('/logout',  function(req, res, next) {
+    // console.log(req.session.passport);
+    // console.log(req.sessionID);
     req.logout();
     req.session.destroy();
     res.redirect('/');
@@ -108,14 +118,6 @@ passport.serializeUser(function(user_id, done) { //Write to session
   
   });
   
-// function authenticationMiddleware() {  
-//       return (req, res, next) => {
-//           console.log(`req.session.passport.user: ${JSON.stringify(req.session.passport)}`);
-  
-//           if (req.isAuthenticated()) return next();
-//           res.redirect('/login')
-//       }
-//   }
 
 
 

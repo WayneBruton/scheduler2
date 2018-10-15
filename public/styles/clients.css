@@ -338,6 +338,7 @@ button {
   display: flex;
   align-content: space-around;
   justify-content: center;
+  margin-top: 7.5rem;
 }
 
 

@@ -6,14 +6,17 @@ const mysql = require('mysql');
 
 
 
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
+    connectionLimit: 10,
     host: process.env.DATABASE_HOST,
     user: process.env.DATABASE_USER,
     database: process.env.DATABASE_NAME,
     password: process.env.DATABASE_PASSWORD,
-    multipleStatements: true //for more than one query in a get route
+    multipleStatements: true, //for more than one query in a get route
+    debug: false
 });
 
-module.exports = connection;
+
+module.exports = pool;
 
 

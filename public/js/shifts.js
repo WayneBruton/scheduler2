@@ -24,18 +24,10 @@ $(function() {
     displayTooltips = 0;
     });
 
-   
-   
-   
-
-   
-   
-   
-
-    $(window).bind('beforeunload', function(){
-        // alert("Are your sure?")
-        deleteshifts();
-    });
+    // $(window).bind('beforeunload', function(){
+    //     // alert("Are your sure?")
+    //     deleteshifts();
+    // });
  
     $("#monthInput").change(function (e) { 
         e.preventDefault();

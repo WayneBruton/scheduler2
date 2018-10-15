@@ -1,4 +1,10 @@
 $(function() {
+
+
+    // $(window).bind('beforeunload', function(){
+    //     // alert('are you sure?');
+    //     $.get('/logout');
+    // });
     // TO AUTOMATICALLY LOG USER OFF AFTER 20 MINUTES
   var idleTime = 0;
   $(document).ready(function () {

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var connection = require('./connection');
+var pool = require('./connection');
 
 const  { authenticationMiddleware } = require('./middleware');
 
@@ -13,15 +13,23 @@ router.get('/shifts',authenticationMiddleware(), function(req, res){
     order by last_name`;
     var queryCarers = 'Select * from carers WHERE ACTIVE = true ORDER BY LAST_NAME';
     var sql = `${queryClients};${queryCarers}`;
-    connection.query(sql, function (error, results, fields) {
-        if (error) throw error;
-        var clients = results[0];
-        var carers = results[1];
-        var viewjs = '../public/js/shifts.js';
-        var viewcss = '../public/styles/shifts.css';
-        console.log(viewjs);
-        res.render('shifts', {clients: clients, carers: carers, viewjs: viewjs, viewcss: viewcss});
+    pool.getConnection(function(err, connection) {
+        if (err) {
+            connection.release();
+            resizeBy.send('Error with connection');
+          }
+          connection.query(sql, function (error, results, fields) {
+            if (error) throw error;
+            var clients = results[0];
+            var carers = results[1];
+            var viewjs = '../public/js/shifts.js';
+            var viewcss = '../public/styles/shifts.css';
+            console.log(viewjs);
+            res.render('shifts', {clients: clients, carers: carers, viewjs: viewjs, viewcss: viewcss});
+        });
+        connection.release();
     });
+    
 });
 
 router.post('/postshifts', function(req, res){
@@ -33,26 +41,43 @@ router.post('/postshifts', function(req, res){
         failure: 'There was a problem'
     }
     var sql = 'INSERT INTO shifts (shift_schedule_id,client_id,carer_id,shift_month,shift_type,shift_start,shift_end, payrollCode) VALUES ?';
-    connection.query(sql ,[data], function (error, result) {
-        // if (error) throw error;
-        // console.log(sql);
-        if (error) {
-            res.end(JSON.stringify(response.failure)); 
-            // console.log(error)   
-        }
-        res.end(JSON.stringify(response.success));
-        console.log(response.success);
+
+    pool.getConnection(function(err, connection){
+        if (err) {
+            connection.release();
+            resizeBy.send('Error with connection');
+          }
+          connection.query(sql ,[data], function (error, result) {
+            // if (error) throw error;
+            // console.log(sql);
+            if (error) {
+                res.end(JSON.stringify(response.failure)); 
+                // console.log(error)   
+            }
+            res.end(JSON.stringify(response.success));
+            console.log(response.success);
+        });
+        connection.release();
     });
+    
 });    
 
 router.get('/shiftsAllocated/:clientSelected/:shiftPeriod', function(req, res){
     var client = req.params.clientSelected;
     var shift = req.params.shiftPeriod;
     var sql = `select shifts.id, time_sheets_processed, client_id, last_name, first_name, carer_id, shift_month, shift_schedule_id, shift_type, shift_start, shift_end from shifts left join carers on shifts.carer_id = carers.id where shift_month = "${shift}" and client_id = ${client}`;
-    connection.query(sql, function (error, results, fields) {
-        if (error) throw error;
-        var shifts = results;
-        res.json({shifts});
+    
+    pool.getConnection(function(err, connection){
+        if (err) {
+            connection.release();
+            resizeBy.send('Error with connection');
+          }
+          connection.query(sql, function (error, results, fields) {
+            if (error) throw error;
+            var shifts = results;
+            res.json({shifts});
+        });
+        connection.release();
     });
 });
 
@@ -63,10 +88,18 @@ router.get('/getpublicholidays/:pYear/:pMonth', function(req, res){
 
     var sql = `select * from publicHolidays where DAYOFWEEK(publicHolidayDate) != 1 and MONTH(publicHolidayDate) = ${pMonth} and YEAR(publicHolidayDate) = ${pYear}`;
     console.log(sql);
-    connection.query(sql, function (error, results, fields) {
-        if (error) throw error;
-        var pHolidays = results;
-        res.json(pHolidays);
+    
+    pool.getConnection(function(err, connection){
+        if (err) {
+            connection.release();
+            resizeBy.send('Error with connection');
+          }
+          connection.query(sql, function (error, results, fields) {
+            if (error) throw error;
+            var pHolidays = results;
+            res.json(pHolidays);
+        });
+        connection.release();
     });
 });
 
@@ -79,14 +112,20 @@ router.delete('/deleteshifts', function(req, res){
     }
 
     var sql = `DELETE FROM shifts WHERE ID IN (${shift})`;
-    connection.query(sql, function (error, results, fields) {
-        if (error) {
-            res.end(JSON.stringify(response.failure)); 
-        };
-        res.end(JSON.stringify(response.success)); 
-    });
+    
+    pool.getConnection(function(err, connection){
+        if (err) {
+            connection.release();
+            resizeBy.send('Error with connection');
+          }
+          connection.query(sql, function (error, results, fields) {
+            if (error) {
+                res.end(JSON.stringify(response.failure)); 
+            };
+            res.end(JSON.stringify(response.success)); 
+        });
+        connection.release();
+    })
 });
-
-
 
 module.exports = router;

@@ -5,7 +5,7 @@ const app = express();
 var expressValidator = require('express-validator');
 var cookieParser = require('cookie-parser');
 require('dotenv/config');
-var connection = require('./routes/connection');
+var pool = require('./routes/connection');
 var bcrypt = require('bcryptjs');
 
 
@@ -67,25 +67,34 @@ passport.use(new LocalStrategy(
         // console.log(username);
         // console.log(password);
 
-  
-        connection.query('select id, password from users where username = ?', [username], function(err, results, fields){
-          if (err) { done(err)};
-          if (results.length === 0) {
-            done(null, false);
-          } else {
-            const hash = results[0].password.toString();
-            var user_id = results[0].id;
-  
-            bcrypt.compare(password, hash , function(err, response){
-              if (response) {
-                return done(null, {user_id: user_id});
+        pool.getConnection(function(err, connection){
+          if (err) {
+            connection.release();
+            resizeBy.send('Error with connection');
+          }
+            connection.query('select id, password from users where username = ?', [username], function(err, results, fields){
+              if (err) { done(err)};
+              if (results.length === 0) {
+                done(null, false);
               } else {
-                return done(null, false);
+                const hash = results[0].password.toString();
+                var user_id = results[0].id;
+      
+                bcrypt.compare(password, hash , function(err, response){
+                  if (response) {
+                    return done(null, {user_id: user_id});
+                  } else {
+                    return done(null, false);
+                  };
+                });
               };
-            });
-          };
-        }); 
-      }));
+              connection.release();
+              
+            })
+          });
+        })
+        );
+        
 
 
 
