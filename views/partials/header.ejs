@@ -10,9 +10,14 @@
     <script src="../public/js/moment-timezone-with-data.js"></script>
     <script src="../../public/js/logoutauto.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../../public/styles/header.css">
-    <script class="script" src="<%= viewjs %>"></script>
     <link rel="stylesheet" href="<%= viewcss %>">
+    <script class="script" src="<%= viewjs %>"></script>
+    
     <!-- <script class="script" src="../../public/js/shifts.js"></script> -->
     
     <link rel="stylesheet" href="../public/styles/footer.css">    
@@ -76,7 +81,7 @@
             <li><a href="/admin">Admin</a> </li>
             <li><a href="/logout">Logout</a> </li>
         <% } %><% if (viewjs === '../public/js/shifts.js') { %>
-            <li><a class="displayTooltips" href="#">Show Tooltips</a></li>
+            <!-- <li><a class="displayTooltips" href="#">Show Tooltips</a></li> -->
             <li><a href="/dashboard">Dashboard</a> </li>
             <li><a href="/clients">Clients</a> </li>
             <li><a href="/carers">Carers</a> </li>

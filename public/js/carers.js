@@ -244,10 +244,12 @@ $(function() {
         $("#activeChecked1").val(1);
         $("#inactivityReason").css("display", "none");
         $("#inactivityReasonLabel").css("display", "none"); 
+        $('.inputData1').css("height", "580px")
         } else {
         $("#activeChecked1").prop("checked", false);
         $("#activeChecked1").val(0);
-        $("#isActive").val(0)
+        $("#isActive").val(0);
+        $('.inputData1').css("height", "650px")
         $("#inactivityReason").val(editData[0].activity_reason);
         }
     }

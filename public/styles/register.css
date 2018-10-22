@@ -114,13 +114,13 @@ button {
 
 }
 
-.container {
+.containerA {
   display: flex;
   /* flex-direction: column; */
   justify-content: center;
   /* width: 90%; */
 
-  height: 65vh;
+  height: 80vh;
   margin-top: 7.5rem;
 
 }
@@ -129,7 +129,7 @@ form {
   margin-top: 5rem;
   display: flex;
   flex-direction: column;
-  width: 30%;
+  width: 35%;
   justify-content: space-evenly;
   border: 1px solid black;
   padding: 0.6rem;
@@ -137,17 +137,6 @@ form {
   
 }
 
-/* #errors {
-  margin-top: 5rem;
-  display: flex;
-  flex-direction: column;
-  width: 30%;
-  justify-content: space-evenly;
-
-  padding: 0.6rem;
-
-  
-} */
 
 .form-group {
   display: flex;
@@ -156,17 +145,21 @@ form {
 
 }
 
+.form-control {
+  width: 60%;
+}
+
 .form-groupRequire {
   display: flex;
   /* align-content: space-between; */
   justify-content: center;
   flex-wrap: wrap;
-  margin-right: 5rem;
+  /* margin-right: 5rem; */
 
 }
 
 input {
-  width: 250px;
+  width: 150px;
 }
 
 label {

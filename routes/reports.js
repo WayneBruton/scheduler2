@@ -6,273 +6,48 @@ var Report = require("fluentreports").Report;
 var moment = require("moment");
 var Json2csvParser = require("json2csv").Parser;
 
-const { authenticationMiddleware } = require("./middleware");
+const {
+  authenticationMiddleware
+} = require("./middleware");
 
-router.get("/reports", authenticationMiddleware(), function(req, res) {
+const { createMonthlySummary } = require('./reportfunctions/monthlySummary');
+const { createCarerWages } = require('./reportfunctions/carerWages');
+const { createExcessiveHours } = require('./reportfunctions/excesiveHours');
+const { createLongerThan12HourShifts } = require('./reportfunctions/longerThan12HourShifts');
+const { createOverlappingShifts } = require('./reportfunctions/overlappingShifts');
+const { createShiftDaysLongerThan24Hours } = require('./reportfunctions/shiftDaysLongerThan24Hours');
+const { createDuplicateFile } = require('./reportfunctions/duplicateFile');
+const { createCarerFile } = require('./reportfunctions/carerFile');
+const { shift } = require('./reportfunctions/shifts');
+
+
+
+router.get("/reports", authenticationMiddleware(), function (req, res) {
   var viewjs = "../public/js/reports.js";
   var viewcss = "../public/styles/reports.css";
-  // var reportLocation
-  res.render("reports", { viewjs: viewjs, viewcss: viewcss });
+  res.render("reports", {
+    viewjs: viewjs,
+    viewcss: viewcss
+  });
 });
 
-var reportData;
 var interimData;
 var myCSVData;
 var reportLocation = process.env.DATABASE_REPORTS;
 
-router.get("/reports/monthlybilling/:monthForSchedules", function(req, res) {
-  var monthInput = req.params.monthForSchedules;
-  console.log(monthInput);
-  // var filename = `${period}-${Date.now()}.txt`;
-  var currentMonth = `${monthInput}-01`;
-  currentMonth = moment(currentMonth).format("MMMM-YYYY");
-  const sql = `select ct.client_type_description as ClientType,   client_id as ClientID, cl.last_name as ClientLastName, cl.first_name as ClientFirstName, shift_start as ShiftStart, shift_end as ShiftEnd, timediff(shift_end, shift_start) as ShiftLength, 
-                    payrollCode, ca.employee_number as EmployeeNumber, ca.last_name as CarerLastName, ca.first_name as CarerFirstName
-                    from shifts s
-                    join clients cl on cl.id = s.client_id
-                    join carers ca on ca.id = s.carer_id
-                    join client_type ct on ct.id = cl.client_type
-                    where shift_month = '${monthInput}' and time_sheets_processed = true
-                    order by cl.last_name, cl.first_name, shift_start`;
-  pool.getConnection(function(err, connection) {
-    if (err) {
-      connection.release();
-      resizeBy.send("Error with connection");
-    }
-    connection.query(sql, function(error, result) {
-      if (error) {
-        console.log(error);
-      }
-      const data = result;
-      console.log(data[0]);
-      console.log(data.length);
-      var host = req.hostname;
-      var port = req.socket.localPort;
-      var filename = `MonthlyBilling.csv`;
-      var filepath = `./files/${filename}`;
-      // var dataToSend = `${filename}~${host}~${port}`;
-      var dataToSend = `${reportLocation}${filename}`;
-      // var dataToSend = `${filename}`;
-      myCSVData = [];
 
-      if (data.length === 0) {
-        const billing = {
-          ClientType: "Nothing processed yet",
-          ClientID: "",
-          ClientLastName: "",
-          ClientFirstName: "",
-          ShiftStart: "",
-          ShiftEnd: "",
-          ShiftLength: "",
-          payrollCode: "",
-          EmployeeNumber: "",
-          CarerLastName: "",
-          CarerFirstName: ""
-        };
-        myCSVData.push(billing);
-      } else {
-        for (i = 0; i < data.length; i++) {
-          // for (i = 0; i < 3; i++) {
-          const billing = {
-            ClientType: `${data[i].ClientType}`,
-            ClientID: `${data[i].ClientID}`,
-            ClientLastName: `${data[i].ClientLastName}`,
-            ClientFirstName: `${data[i].ClientFirstName}`,
-            ShiftStart: `${moment(data[i].ShiftStart).format(
-              "YYYY-MM-DD HH:mm"
-            )}`,
-            ShiftEnd: `${moment(data[i].ShiftEnd).format("YYYY-MM-DD HH:mm")}`,
-            ShiftLength: `${data[i].ShiftLength}`,
-            payrollCode: `${data[i].payrollCode}`,
-            EmployeeNumber: `${data[i].EmployeeNumber}`,
-            CarerLastName: `${data[i].CarerLastName}`,
-            CarerFirstName: `${data[i].CarerFirstName}`
-          };
-          myCSVData.push(billing);
-        }
-      }
+router.get("/reports/monthlysummary/:monthForSchedules", function (req, res) {
 
-      const fields = [
-        "ClientType",
-        "ClientID",
-        "ClientLastName",
-        "ClientFirstName",
-        "ShiftStart",
-        "ShiftEnd",
-        "ShiftLength",
-        "payrollCode",
-        "EmployeeNumber",
-        "CarerLastName",
-        "CarerFirstName"
-      ];
-      const json2csvParser = new Json2csvParser({ fields });
-      const csv = json2csvParser.parse(myCSVData);
-      fs.writeFile(filepath, csv, function(err) {
-        if (err) throw err;
-      });
 
-      res.send(dataToSend);
-      console.log("Created File!!");
-    });
-
-    connection.release();
-  });
-});
-
-function createMonthlySummary() {
-  "use strict";
-  var mydata = reportData;
-  // console.log(mydata);
-  var thisMonth = mydata[0].currentMonth;
-  console.log(thisMonth);
-
-  var header = function(rpt, data) {
-    rpt.fontSize(9);
-    rpt.print(new Date().toString("MM/dd/yyyy")); //, {y: 30, align: 'right'});
-    // Report Title
-    rpt.newline();
-    rpt.fontBold();
-    rpt.print(`Carer Wages: ${data.currentMonth}`, {
-      fontBold: true,
-      fontSize: 16,
-      align: "center",
-      underline: true
-    });
-    rpt.newline();
-    rpt.newline();
-    // Detail Header
-    rpt.fontsize(9);
-    rpt.fontBold();
-    rpt.band([
-      {
-        data: "Client Type.",
-        width: 90,
-        align: 2,
-        textColor: "black",
-        underline: true
-      },
-      { data: "Clients.", width: 90, align: 2, underline: true },
-      { data: "Hours Billed", width: 100, align: 3, underline: true },
-      { data: "Cost in Wages", width: 110, align: 3, underline: true },
-      { data: "Est Income", width: 110, align: 3, underline: true },
-      { data: "Gross Income", width: 110, align: 3, underline: true }
-    ]);
-    rpt.fontNormal();
-    rpt.fontsize(9);
-    rpt.newline();
-    rpt.bandLine();
-    rpt.newline();
-  };
-  var detail = function(rpt, data) {
-    data.wages = (parseInt(data.wages * 100) / 100).toFixed(2);
-    data.income = (parseInt(data.income * 100) / 100).toFixed(2);
-    data.net = (parseInt(data.net * 100) / 100).toFixed(2);
-
-    rpt.newline();
-    // Detail Body
-    rpt.band([
-      { data: `${data.clientType}`, width: 90, align: 2 },
-      { data: `${data.clientsThisMonth}`, width: 90, align: 2 },
-      { data: `${data.hoursThisMonth}`, width: 100, align: 3 },
-      { data: `${data.wages}`, width: 110, align: 3 },
-      { data: `${data.income}`, width: 110, align: 3 },
-      { data: `${data.net}`, width: 110, align: 3 }
-      //    {data: `${data.net}`, width: 110, align: 3}
-    ]);
-
-    //   data.net = (data.net).toFixed(2);
-    //   ], {border: 1, width: 0, wrap:2});
-  };
-
-  var finalSummary = function(rpt, data) {
-    rpt.newline();
-    rpt.standardFooter([
-      ["clientType", 1, 2],
-      ["clientsThisMonth", 2, 2],
-      ["hoursThisMonth", 3, 3],
-      ["wages", 4, 3],
-      ["income", 5, 3],
-      ["net", 6, 3]
-    ]);
-
-    rpt.newline();
-    rpt.newline();
-    rpt.print("Thank You for Choosing Eccentric Toad!", { align: "left" });
-  };
-
-  var totalFormatter = function(data, callback) {
-    for (var key in data) {
-      if (data.hasOwnProperty(key)) {
-        if (key === "clientType") {
-          continue;
-        }
-        // Simple Stupid Money formatter.  It is fairly dumb.  ;-)
-        var money = data[key].toFixed(2).toString();
-        // console.log('This is money', money);
-        var idx = money.indexOf(".");
-        // console.log('THIS IS IDX',idx);
-        if (idx === -1) {
-          money += ".00";
-        } else if (idx === money.length - 2) {
-          money += "0";
-        }
-        for (var i = 6; i < money.length; i += 4) {
-          money =
-            money.substring(0, money.length - i) +
-            "," +
-            money.substring(money.length - i);
-        }
-
-        // data[key] = '$ '+money;
-        data[key] = " " + money;
-        // console.log('This is money', money);
-      }
-    }
-
-    callback(null, data);
-  };
-
-  var rptName = "files/MonthlySummary.pdf";
-
-  var resultReport = new Report(rptName, {
-    landscape: true,
-    paper: "A4",
-    autoPrint: false
-  })
-    .data(mydata)
-    .totalFormatter(totalFormatter);
-
-  // Settings
-  resultReport
-    .fontsize(9)
-    .margins(40)
-    .fullscreen(true)
-    // .groupBy('employeeNumber')
-    .groupBy("currentMonth")
-    .sum("clientsThisMonth")
-    .sum("hoursThisMonth")
-    .sum("wages")
-    .sum("income")
-    .sum("net")
-    // .count('employeeNumber')
-    .detail(detail)
-    .footer(finalSummary)
-    .header(header, { pageBreakBefore: true });
-
-  console.time("Rendered");
-  resultReport.render(function(err, name) {
-    console.timeEnd("Rendered");
-  });
-}
-
-router.get("/reports/monthlysummary/:monthForSchedules", function(req, res) {
   var monthInput = req.params.monthForSchedules;
   console.log(monthInput);
   var currentMonth = `${monthInput}-01`;
   currentMonth = moment(currentMonth).format("MMMM-YYYY");
   console.log(currentMonth);
-  reportData = [];
+  var reportData = [];
   interimData = [];
+
+  console.log(sql);
 
   // ${monthInput}
   var sql = `select  ct.client_type_description as clientType,count(distinct client_id) clientsThisMonth, sum(time_to_sec(timediff(shift_end, shift_start )) / 3600) as hoursThisMonth
@@ -291,13 +66,14 @@ router.get("/reports/monthlysummary/:monthForSchedules", function(req, res) {
                 group by  carer_id, ca.last_name, ca.first_name, payrollCode, cl.client_type
                 order by ca.employee_number`;
 
+
   var combineSQL = `${sql2};${sql}`;
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(combineSQL, function(error, result) {
+    connection.query(combineSQL, function (error, result) {
       if (error) throw error;
       // res.send(result);
       var data = result[0];
@@ -427,7 +203,7 @@ router.get("/reports/monthlysummary/:monthForSchedules", function(req, res) {
 
       // console.log(data2)
       res.contentType("application/pdf");
-      createMonthlySummary();
+      createMonthlySummary(reportData);
       var host = req.hostname;
       var port = req.socket.localPort;
       var filename = `MonthlySummary.pdf`;
@@ -444,144 +220,14 @@ router.get("/reports/monthlysummary/:monthForSchedules", function(req, res) {
   });
 });
 
-function createCarerWages() {
-  "use strict";
-  var mydata = reportData;
 
-  var thisMonth = mydata[0].currentMonth;
-  console.log(thisMonth);
-
-  var header = function(rpt, data) {
-    rpt.fontSize(9);
-    rpt.print(new Date().toString("MM/dd/yyyy")); //, {y: 30, align: 'right'});
-    // Report Title
-    rpt.newline();
-    rpt.fontBold();
-    rpt.print(`Carer Wages: ${data.currentMonth}`, {
-      fontBold: true,
-      fontSize: 16,
-      align: "center",
-      underline: true
-    });
-    rpt.newline();
-    rpt.newline();
-    // Detail Header
-    rpt.fontsize(9);
-    rpt.fontBold();
-    rpt.band([
-      {
-        data: "Staff No.",
-        width: 90,
-        align: 2,
-        textColor: "black",
-        underline: true
-      },
-      { data: "Staff Member Name.", width: 110, align: 2, underline: true },
-      { data: "Rate.", width: 50, align: 2, underline: true },
-      { data: "Client Type.", width: 110, align: 2, underline: true },
-      { data: "Hours.", width: 50, align: 2, underline: true },
-      { data: "Wage.", width: 110, align: 2, underline: true }
-    ]);
-    rpt.fontNormal();
-    rpt.fontsize(9);
-    rpt.newline();
-    rpt.bandLine();
-    rpt.newline();
-  };
-  var detail = function(rpt, data) {
-    data.wages = data.wages.toFixed(2);
-    // var counter = 0;
-    rpt.newline();
-    // Detail Body
-    rpt.band([
-      { data: `${data.employeeNumber}`, width: 90, align: 2 },
-      { data: `${data.caLastName} ${data.caFirstName}`, width: 110, align: 2 },
-      { data: `${data.rate_per_hour}`, width: 50, align: 2 },
-      { data: `${data.clientType}`, width: 110, align: 2 },
-      { data: `${data.totalHours}`, width: 50, align: 2 },
-      { data: `${data.wages}`, width: 110, align: 3 }
-    ]);
-    //   ], {border: 1, width: 0, wrap:2});
-  };
-
-  var finalSummary = function(rpt, data) {
-    rpt.newline();
-    rpt.standardFooter([
-      ["employeeNumber", 1, 2],
-      ["totalHours", 5, 2],
-      ["wages", 6, 3]
-    ]);
-    rpt.newline();
-    rpt.newline();
-    rpt.print("Thank You for Eccentric Toad!", { align: "left" });
-  };
-
-  var totalFormatter = function(data, callback) {
-    for (var key in data) {
-      if (data.hasOwnProperty(key)) {
-        if (key === "employeeNumber") {
-          continue;
-        }
-        // Simple Stupid Money formatter.  It is fairly dumb.  ;-)
-        var money = data[key].toString();
-        var idx = money.indexOf(".");
-        if (idx === -1) {
-          money += ".00";
-        } else if (idx === money.length - 2) {
-          money += "0";
-        }
-        for (var i = 6; i < money.length; i += 4) {
-          money =
-            money.substring(0, money.length - i) +
-            "," +
-            money.substring(money.length - i);
-        }
-
-        // data[key] = '$ '+money;
-        data[key] = " " + money;
-      }
-    }
-
-    callback(null, data);
-  };
-
-  var rptName = "files/CarerWages.pdf";
-
-  var resultReport = new Report(rptName, {
-    landscape: false,
-    paper: "A4",
-    autoPrint: false
-  })
-    .data(mydata)
-    .totalFormatter(totalFormatter);
-
-  // Settings
-  resultReport
-    .fontsize(9)
-    .margins(40)
-    .fullscreen(true)
-    // .groupBy('employeeNumber')
-    .groupBy("currentMonth")
-    .sum("totalHours")
-    .sum("wages")
-    .count("employeeNumber")
-    .detail(detail)
-    .footer(finalSummary)
-    .header(header, { pageBreakBefore: true });
-
-  console.time("Rendered");
-  resultReport.render(function(err, name) {
-    console.timeEnd("Rendered");
-  });
-}
-
-router.get("/reports/monthlywages/:monthForSchedules", function(req, res) {
+router.get("/reports/monthlywages/:monthForSchedules", function (req, res) {
   var monthInput = req.params.monthForSchedules;
   console.log(monthInput);
   var currentMonth = `${monthInput}-01`;
   currentMonth = moment(currentMonth).format("MMMM-YYYY");
   console.log(currentMonth);
-  reportData = [];
+  var reportData = [];
   interimData = [];
 
   var sql = `select  distinct ca.employee_number as employeeNumber, ca.last_name as caLastName, ca.first_name as caFirstName,payrollCode, ca.rate_per_hour, ct.client_type_description as clientType, sum(time_to_sec(timediff(shift_end, shift_start )) / 3600) as totalHours
@@ -592,12 +238,12 @@ router.get("/reports/monthlywages/:monthForSchedules", function(req, res) {
                 where shift_month = '${monthInput}'
                 group by  carer_id, ca.last_name, ca.first_name, payrollCode, cl.client_type
                 order by ca.employee_number`;
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) throw error;
       // res.send(result);
       var data = result;
@@ -678,7 +324,7 @@ router.get("/reports/monthlywages/:monthForSchedules", function(req, res) {
       }
 
       res.contentType("application/pdf");
-      createCarerWages();
+      createCarerWages(reportData);
       var host = req.hostname;
       var port = req.socket.localPort;
       var filename = `CarerWages.pdf`;
@@ -695,86 +341,15 @@ router.get("/reports/monthlywages/:monthForSchedules", function(req, res) {
   });
 });
 
-function createExcessiveHours() {
-  "use strict";
-  var mydata = reportData;
 
-  var thisMonth = mydata[0].currentMonth;
-  console.log(thisMonth);
 
-  var header = function(rpt, data) {
-    rpt.fontSize(9);
-    rpt.print(new Date().toString("MM/dd/yyyy")); //, {y: 30, align: 'right'});
-    // Report Title
-    rpt.newline();
-    rpt.fontBold();
-    rpt.print(`Shifts longer than 12 hours: ${data.currentMonth}`, {
-      fontBold: true,
-      fontSize: 16,
-      align: "center",
-      underline: true
-    });
-    rpt.newline();
-    rpt.newline();
-    // Detail Header
-    rpt.fontsize(9);
-    rpt.fontBold();
-    rpt.band([
-      {
-        data: "Staff No.",
-        width: 110,
-        align: 2,
-        textColor: "black",
-        underline: true
-      },
-      { data: "Staff Member Name", width: 110, align: 2, underline: true },
-      { data: "Total Time", width: 110, align: 2, underline: true }
-    ]);
-    rpt.fontNormal();
-    rpt.fontsize(9);
-  };
-  var detail = function(rpt, data) {
-    // var counter = 0;
-    rpt.newline();
-    // Detail Body
-    rpt.band([
-      { data: `${data.employeeNumber}`, width: 110, align: 2 },
-      { data: `${data.caLastName} ${data.caFirstName}`, width: 110, align: 2 },
-      { data: `${data.duration}`, width: 110, align: 2 }
-    ]);
-    //   ], {border: 1, width: 0, wrap:2});
-  };
-
-  var rptName = "files/Excessivehours.pdf";
-
-  var resultReport = new Report(rptName, {
-    landscape: false,
-    paper: "A4",
-    autoPrint: false
-  }).data(mydata);
-  // Settings
-  resultReport
-    .fontsize(9)
-    .margins(40)
-    .fullscreen(true)
-    // .groupBy('employeeNumber')
-    .groupBy("currentMonth")
-    .detail(detail)
-    .header(header, { pageBreakBefore: true });
-
-  console.time("Rendered");
-  resultReport.render(function(err, name) {
-    console.timeEnd("Rendered");
-  });
-}
-
-router.get("/reports/excessivehours/:monthForSchedules", function(req, res) {
+router.get("/reports/excessivehours/:monthForSchedules", function (req, res) {
   var monthInput = req.params.monthForSchedules;
   console.log(monthInput);
   var currentMonth = `${monthInput}-01`;
   currentMonth = moment(currentMonth).format("MMMM-YYYY");
   console.log(currentMonth);
-  reportData = [];
+  var reportData = [];
 
   var sql = `select  carer_id, carers.employee_number as employeeNumber , carers.last_name as caLastName, carers.first_name as caFirstName,
                 sum(time_to_sec(timediff(shift_end, shift_start )) / 3600) as totalTime
@@ -785,12 +360,12 @@ router.get("/reports/excessivehours/:monthForSchedules", function(req, res) {
                 having sum(time_to_sec(timediff(shift_end, shift_start )) / 3600) > 195
                 order by carers.employee_number`;
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) throw error;
       // res.send(result);
       var data = result;
@@ -818,7 +393,7 @@ router.get("/reports/excessivehours/:monthForSchedules", function(req, res) {
       }
 
       res.contentType("application/pdf");
-      createExcessiveHours();
+      createExcessiveHours(reportData);
       var host = req.hostname;
       var port = req.socket.localPort;
       var filename = `Excessivehours.pdf`;
@@ -832,96 +407,8 @@ router.get("/reports/excessivehours/:monthForSchedules", function(req, res) {
   });
 });
 
-function createLongerThan12HourShifts() {
-  "use strict";
-  var mydata = reportData;
 
-  var thisMonth = mydata[0].currentMonth;
-  console.log(thisMonth);
-
-  var header = function(rpt, data) {
-    rpt.fontSize(9);
-    rpt.print(new Date().toString("MM/dd/yyyy")); //, {y: 30, align: 'right'});
-    // Report Title
-    rpt.newline();
-    rpt.fontBold();
-    rpt.print(`Shifts londer than 12 hours: ${data.currentMonth}`, {
-      fontBold: true,
-      fontSize: 16,
-      align: "center",
-      underline: true
-    });
-    rpt.newline();
-    rpt.newline();
-    // Detail Header
-    rpt.fontsize(9);
-    rpt.fontBold();
-    rpt.band([
-      {
-        data: "Start",
-        width: 110,
-        align: 2,
-        textColor: "black",
-        underline: true
-      },
-      { data: "End", width: 110, align: 2, underline: true },
-      { data: "Duration (HH;mm)", width: 110, align: 2, underline: true },
-      { data: "Client", width: 110, align: 2, underline: true },
-      // {data: 'Client: Name', width: 110, align: 2, underline: true},
-      { data: "Staff", width: 110, align: 2, underline: true }
-      // {data: 'Staff: Name', width: 110, align: 2, underline: true}
-    ]);
-    rpt.fontNormal();
-    rpt.fontsize(9);
-  };
-  var detail = function(rpt, data) {
-    // var counter = 0;
-    rpt.newline();
-    // Detail Body
-    rpt.band([
-      { data: `${data.shiftStart}`, width: 110, align: 2 },
-      { data: `${data.shiftEnd}`, width: 110, align: 2 },
-      { data: `${data.duration}`, width: 110, align: 2 },
-      {
-        data: `${data.clientID}:${data.clLastName} ${data.clFirstName}`,
-        align: 2,
-        width: 110
-      },
-      //    {data: `${data.clLastName} ${data.clFirstName}`, width: 110, align: 2},
-      {
-        data: `${data.employeeNumber}:${data.caLastName} ${data.caFirstName}`,
-        width: 110,
-        align: 2
-      }
-      //    {data: `${data.caLastName} ${data.caFirstName}`, width: 110, align: 2}
-    ]);
-    //   ], {border: 1, width: 0, wrap:2});
-  };
-
-  var rptName = "files/Longerthan12hourshifts.pdf";
-
-  var resultReport = new Report(rptName, {
-    landscape: false,
-    paper: "A4",
-    autoPrint: false
-  }).data(mydata);
-  // Settings
-  resultReport
-    .fontsize(9)
-    .margins(40)
-    .fullscreen(true)
-    .groupBy("employeeNumber")
-    // .groupBy('currentMonth')
-    .detail(detail)
-    .header(header, { pageBreakBefore: true });
-
-  console.time("Rendered");
-  resultReport.render(function(err, name) {
-    console.timeEnd("Rendered");
-  });
-}
-
-router.get("/reports/longerthan12hourshifts/:monthForSchedules", function(
+router.get("/reports/longerthan12hourshifts/:monthForSchedules", function (
   req,
   res
 ) {
@@ -930,7 +417,7 @@ router.get("/reports/longerthan12hourshifts/:monthForSchedules", function(
   var currentMonth = `${monthInput}-01`;
   currentMonth = moment(currentMonth).format("MMMM-YYYY");
   console.log(currentMonth);
-  reportData = [];
+  var reportData = [];
   var sql = `select carers.employee_number as employeeNumber , carers.last_name as caLastName, carers.first_name as caFirstName, clients.id as clientID, clients.last_name as clLastName, clients.first_name as clFirstName, 
     shift_start as shiftStart, shift_end as shiftEnd ,time_format(timediff(shift_end,shift_start),'%H:%i') as duration,
     time_to_sec(timediff(shift_end, shift_start )) / 3600 as duration2
@@ -939,12 +426,12 @@ router.get("/reports/longerthan12hourshifts/:monthForSchedules", function(
      inner join clients on clients.id = client_id
     where shift_month = '${monthInput}' and ((time_to_sec(timediff(shift_end, shift_start )) / 3600) > 12)`;
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) throw error;
       // res.send(result);
       var data = result;
@@ -982,7 +469,7 @@ router.get("/reports/longerthan12hourshifts/:monthForSchedules", function(
       }
 
       res.contentType("application/pdf");
-      createLongerThan12HourShifts();
+      createLongerThan12HourShifts(reportData);
       var host = req.hostname;
       var port = req.socket.localPort;
       var filename = `Longerthan12hourshifts.pdf`;
@@ -996,91 +483,14 @@ router.get("/reports/longerthan12hourshifts/:monthForSchedules", function(
   });
 });
 
-function createOverlappingShifts() {
-  "use strict";
-  var mydata = reportData;
 
-  var thisMonth = mydata[0].currentMonth;
-  console.log(thisMonth);
-
-  var header = function(rpt, data) {
-    rpt.fontSize(9);
-    rpt.print(new Date().toString("MM/dd/yyyy")); //, {y: 30, align: 'right'});
-    // Report Title
-    rpt.newline();
-    rpt.fontBold();
-    rpt.print(`Shifts that overlap : ${data.currentMonth}`, {
-      fontBold: true,
-      fontSize: 16,
-      align: "center",
-      underline: true
-    });
-    rpt.newline();
-    rpt.newline();
-    // Detail Header
-    rpt.fontsize(9);
-    rpt.fontBold();
-    rpt.band([
-      {
-        data: "Start",
-        width: 110,
-        align: 2,
-        textColor: "black",
-        underline: true
-      },
-      { data: "End", width: 110, align: 2, underline: true },
-      { data: "Client ID", width: 110, align: 2, underline: true },
-      { data: "Client: Name", width: 110, align: 2, underline: true },
-      { data: "Staff No", width: 110, align: 2, underline: true },
-      { data: "Staff: Name", width: 110, align: 2, underline: true }
-    ]);
-    rpt.fontNormal();
-    rpt.fontsize(9);
-  };
-  var detail = function(rpt, data) {
-    // var counter = 0;
-    rpt.newline();
-    // Detail Body
-    rpt.band([
-      { data: `${data.shiftStart}`, width: 110, align: 2 },
-      { data: `${data.shiftEnd}`, width: 110, align: 2 },
-      { data: `${data.clientID}`, align: 2, width: 110 },
-      { data: `${data.clLastName} ${data.clFirstName}`, width: 110, align: 2 },
-      { data: `${data.employeeNumber}`, width: 110, align: 2 },
-      { data: `${data.caLastName} ${data.caFirstName}`, width: 110, align: 2 }
-    ]);
-    //   ], {border: 1, width: 0, wrap:2});
-  };
-
-  var rptName = "files/Overlappingshifts.pdf";
-
-  var resultReport = new Report(rptName, {
-    landscape: true,
-    paper: "A4",
-    autoPrint: false
-  }).data(mydata);
-  // Settings
-  resultReport
-    .fontsize(9)
-    .margins(40)
-    .fullscreen(true)
-    .groupBy("currentMonth")
-    .detail(detail)
-    .header(header, { pageBreakBefore: true });
-
-  console.time("Rendered");
-  resultReport.render(function(err, name) {
-    console.timeEnd("Rendered");
-  });
-}
-
-router.get("/reports/overlappingshifts/:monthForSchedules", function(req, res) {
+router.get("/reports/overlappingshifts/:monthForSchedules", function (req, res) {
   var monthInput = req.params.monthForSchedules;
   console.log(monthInput);
   var currentMonth = `${monthInput}-01`;
   currentMonth = moment(currentMonth).format("MMMM-YYYY");
   console.log(currentMonth);
-  reportData = [];
+  var reportData = [];
   var sql = `select cl.last_name as clLastName, cl.first_name as clFirstName,cl.id as clientID, ca.last_name as caLastName, ca.first_name as caFirstName ,ca.employee_number as employeeNumber,  a.shift_start as shiftStart, a.shift_end as shiftEnd from shifts a 
     inner join shifts b on a.client_id = b.client_id 
        and a.shift_end > b.shift_start and a.shift_start < b.shift_end
@@ -1089,12 +499,12 @@ router.get("/reports/overlappingshifts/:monthForSchedules", function(req, res) {
     join carers  ca on a.carer_id = ca.id
     where a.shift_month = '${monthInput}' and b.shift_month = '${monthInput}'`;
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) throw error;
       // res.send(result);
       var data = result;
@@ -1130,7 +540,7 @@ router.get("/reports/overlappingshifts/:monthForSchedules", function(req, res) {
       }
 
       res.contentType("application/pdf");
-      createOverlappingShifts();
+      createOverlappingShifts(reportData);
       var host = req.hostname;
       var port = req.socket.localPort;
       var filename = `Overlappingshifts.pdf`;
@@ -1144,83 +554,8 @@ router.get("/reports/overlappingshifts/:monthForSchedules", function(req, res) {
   });
 });
 
-function createShiftDaysLongerThan24Hours() {
-  "use strict";
-  var mydata = reportData;
 
-  var thisMonth = mydata[0].currentMonth;
-  console.log(thisMonth);
-
-  var header = function(rpt, data) {
-    rpt.fontSize(9);
-    rpt.print(new Date().toString("MM/dd/yyyy")); //, {y: 30, align: 'right'});
-    // Report Title
-    rpt.newline();
-    rpt.fontBold();
-    rpt.print(`Shifts exceeding 24 hours in a day : ${data.currentMonth}`, {
-      fontBold: true,
-      fontSize: 16,
-      align: "center",
-      underline: true
-    });
-    rpt.newline();
-    rpt.newline();
-    // Detail Header
-    rpt.fontsize(9);
-    rpt.fontBold();
-    rpt.band([
-      {
-        data: "Shift Date",
-        width: 110,
-        align: 2,
-        textColor: "black",
-        underline: true
-      },
-      { data: "Total Time", width: 110, align: 2, underline: true },
-      { data: "Client ID", width: 110, align: 2, underline: true },
-      { data: "Client: Last Name", width: 110, align: 2, underline: true },
-      { data: "Client: First Name", width: 110, align: 2, underline: true }
-    ]);
-    rpt.fontNormal();
-    rpt.fontsize(9);
-  };
-  var detail = function(rpt, data) {
-    // var counter = 0;
-    rpt.newline();
-    // Detail Body
-    rpt.band([
-      { data: `${data.shiftDate}`, width: 110, align: 2 },
-      { data: `${data.totalTime}`, width: 110, align: 2 },
-      { data: `${data.client_id}`, align: 2, width: 110 },
-      { data: `${data.clLastName}`, width: 110, align: 2 },
-      { data: `${data.clFirstName}`, width: 110, align: 2 }
-    ]);
-    //   ], {border: 1, width: 0, wrap:2});
-  };
-
-  var rptName = "files/Shiftdayslongerthan24hrs.pdf";
-
-  var resultReport = new Report(rptName, {
-    landscape: false,
-    paper: "A4",
-    autoPrint: false
-  }).data(mydata);
-  // Settings
-  resultReport
-    .fontsize(9)
-    .margins(40)
-    .fullscreen(true)
-    .groupBy("currentMonth")
-    .detail(detail)
-    .header(header, { pageBreakBefore: true });
-
-  console.time("Rendered");
-  resultReport.render(function(err, name) {
-    console.timeEnd("Rendered");
-  });
-}
-
-router.get("/reports/printmorethan24hrs/:monthForSchedules", function(
+router.get("/reports/printmorethan24hrs/:monthForSchedules", function (
   req,
   res
 ) {
@@ -1229,7 +564,7 @@ router.get("/reports/printmorethan24hrs/:monthForSchedules", function(
   var currentMonth = `${monthInput}-01`;
   currentMonth = moment(currentMonth).format("MMMM-YYYY");
   console.log(currentMonth);
-  reportData = [];
+  var reportData = [];
   var sql = `select  client_id, clients.last_name, clients.first_name, date(shift_start) as shiftDate ,
     sum(time_to_sec(timediff(shift_end, shift_start )) / 3600) as totalTime from shifts
     join clients on shifts.client_id = clients.id
@@ -1237,13 +572,13 @@ router.get("/reports/printmorethan24hrs/:monthForSchedules", function(
     group by  date(shift_start),client_id
     having sum(time_to_sec(timediff(shift_end, shift_start )) / 3600) > 24`;
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
 
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) throw error;
       // res.send(result);
       var data = result;
@@ -1273,7 +608,7 @@ router.get("/reports/printmorethan24hrs/:monthForSchedules", function(
       }
 
       res.contentType("application/pdf");
-      createShiftDaysLongerThan24Hours();
+      createShiftDaysLongerThan24Hours(reportData);
       var host = req.hostname;
       var port = req.socket.localPort;
       var filename = `Shiftdayslongerthan24hrs.pdf`;
@@ -1287,13 +622,13 @@ router.get("/reports/printmorethan24hrs/:monthForSchedules", function(
   });
 });
 
-router.get("/reports/duplicateShifts/:monthForSchedules", function(req, res) {
+router.get("/reports/duplicateShifts/:monthForSchedules", function (req, res) {
   var monthInput = req.params.monthForSchedules;
   console.log(monthInput);
   var currentMonth = `${monthInput}-01`;
   currentMonth = moment(currentMonth).format("MMMM-YYYY");
   console.log(currentMonth);
-  reportData = [];
+  var reportData = [];
   var sql = `SELECT 
     carers.employee_number as employeeNumber,carers.last_name as caLastName,carers.first_name as caFirstName, COUNT(carer_id),
     date(shift_start) as shiftDate, count(date(shift_start)) as duplicates
@@ -1310,12 +645,12 @@ HAVING
        (COUNT(carer_id) > 1) AND 
        (COUNT(date(shift_start)) > 1)`;
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) throw error;
       // res.send(result);
       var data = result;
@@ -1345,7 +680,7 @@ HAVING
       }
 
       res.contentType("application/pdf");
-      createDuplicateFile();
+      createDuplicateFile(reportData);
       // var host = req.hostname;
       // var port = req.socket.localPort;
       var filename = `DuplicateShifts.pdf`;
@@ -1359,188 +694,18 @@ HAVING
   });
 });
 
-function createDuplicateFile() {
-  "use strict";
-  var mydata = reportData;
-
-  var thisMonth = mydata[0].currentMonth;
-  console.log(thisMonth);
-
-  var header = function(rpt, data) {
-    rpt.fontSize(9);
-    rpt.print(new Date().toString("MM/dd/yyyy")); //, {y: 30, align: 'right'});
-    // Report Title
-    rpt.newline();
-    rpt.fontBold();
-    rpt.print(`Duplicate Shifts : ${data.currentMonth}`, {
-      fontBold: true,
-      fontSize: 16,
-      align: "center",
-      underline: true
-    });
-    rpt.newline();
-    rpt.newline();
-    // Detail Header
-    rpt.fontsize(9);
-    rpt.fontBold();
-    rpt.band([
-      {
-        data: "Shift Date",
-        width: 110,
-        align: 2,
-        textColor: "black",
-        underline: true
-      },
-      { data: "Employee Number", width: 110, align: 2, underline: true },
-      { data: "Employee: Last Name", width: 110, align: 2, underline: true },
-      { data: "Employee: First Name", align: 2, width: 110, underline: true },
-      { data: "Duplicates", align: 2, width: 110, underline: true }
-    ]);
-    rpt.fontNormal();
-    rpt.fontsize(9);
-  };
-  var detail = function(rpt, data) {
-    // var counter = 0;
-    rpt.newline();
-    // Detail Body
-    rpt.band([
-      { data: `${data.shiftDate}`, width: 110, align: 2 },
-      { data: `${data.employeeNumber}`, width: 110, align: 2 },
-      { data: `${data.caLastName}`, align: 2, width: 110 },
-      { data: `${data.caFirstName}`, width: 110, align: 2 },
-      { data: `${data.shiftCount}`, width: 110, align: 2 }
-    ]);
-    //   ], {border: 1, width: 0, wrap:2});
-  };
-
-  var rptName = "files/DuplicateShifts.pdf";
-
-  var resultReport = new Report(rptName, {
-    landscape: true,
-    paper: "A4",
-    autoPrint: false
-  }).data(mydata);
-  // Settings
-  resultReport
-    .fontsize(9)
-    .margins(40)
-    .fullscreen(true)
-    .groupBy("currentMonth")
-    .detail(detail)
-    .header(header, { pageBreakBefore: true });
-
-  console.time("Rendered");
-  resultReport.render(function(err, name) {
-    console.timeEnd("Rendered");
-  });
-}
 
 // var data;
-function createCarerFile() {
-  "use strict";
-  var mydata = reportData;
-  // console.log(mydata);
-  var contactInfo = function(rpt, data) {
-    rpt.fontsize(12);
-    rpt.fontBold();
-    rpt.print([data.carerEENo + " : " + data.carerName], { x: 80 });
-  };
-
-  var header = function(rpt, data) {
-    if (!data.carerEENo) {
-      return;
-    }
-
-    rpt.fontSize(9);
-    rpt.print(new Date().toString("MM/dd/yyyy")); //, {y: 30, align: 'right'});
-    // Report Title
-    rpt.print(`SCHEDULES\n${data.thisMonthsSchedule}`, {
-      fontBold: true,
-      fontSize: 16,
-      align: "center"
-    });
-    // Contact Info
-    contactInfo(rpt, data);
-
-    rpt.newline();
-    // Detail Header
-    rpt.fontsize(15);
-    rpt.fontBold();
-    rpt.band(
-      [
-        { data: "Monday", width: 110, align: 2, textColor: "black" },
-        { data: "Tuesday", width: 110, align: 2 },
-        { data: "Wednesday", width: 110, align: 2 },
-        { data: "Thursday", align: 2, width: 110 },
-        { data: "Friday", width: 110, align: 2 },
-        { data: "Saturday", width: 110, align: 2 },
-        { data: "Sunday", width: 110, align: 2 }
-      ],
-      { border: 1, width: 0, fill: "lightgrey" }
-    );
-    rpt.fontNormal();
-    rpt.fontsize(12);
-    // rpt.bandLine();
-  };
-  var detail = function(rpt, data) {
-    // var counter = 0;
-    rpt.newline();
-    var day1 = data.day1.split("~");
-    var day2 = data.day2.split("~");
-    var day3 = data.day3.split("~");
-    var day4 = data.day4.split("~");
-    var day5 = data.day5.split("~");
-    var day6 = data.day6.split("~");
-    var day7 = data.day7.split("~");
-    // console.log(day1);
-    // Detail Body
-    rpt.band(
-      [
-        { data: `${day1[0]}\n${day1[1]}\n${day1[2]}`, width: 110, align: 2 },
-        //    {data: data.sale.purchase_order},
-        { data: `${day2[0]}\n${day2[1]}\n${day2[2]}`, width: 110, align: 2 },
-        { data: `${day3[0]}\n${day3[1]}\n${day3[2]}`, align: 2, width: 110 },
-        { data: `${day4[0]}\n${day4[1]}\n${day4[2]}`, width: 110, align: 2 },
-        { data: `${day5[0]}\n${day5[1]}\n${day5[2]}`, width: 110, align: 2 },
-        { data: `${day6[0]}\n${day6[1]}\n${day6[2]}`, width: 110, align: 2 },
-        { data: `${day7[0]}\n${day7[1]}\n${day7[2]}`, width: 110, align: 2 }
-      ],
-      { border: 1, width: 0, wrap: 2 }
-    );
-  };
-
-  var rptName = "files/CarerSchedules.pdf";
-
-  var resultReport = new Report(rptName, {
-    landscape: true,
-    paper: "A4",
-    autoPrint: false
-  }).data(mydata);
-  // Settings
-  resultReport
-    .fontsize(9)
-    .margins(40)
-    .fullscreen(true)
-    .groupBy("carerName")
-    // .groupBy('carerEENo')
-    .detail(detail)
-    .header(header, { pageBreakBefore: true });
-
-  console.time("Rendered");
-  resultReport.render(function(err, name) {
-    console.timeEnd("Rendered");
-  });
-}
 
 //
 
-router.get("/reports/carerSchedules/:monthForSchedules", function(req, res) {
+router.get("/reports/carerSchedules/:monthForSchedules", function (req, res) {
   for (i = 0; i < shift.length; i++) {
     shift[i].scheduleDayOfMonth = 0;
     shift[i].scheduleNthDayOfMonth = "";
   }
   // shift = shift2;
-  reportData = [];
+  var reportData = [];
 
   var monthInput = req.params.monthForSchedules;
   console.log(monthInput);
@@ -1600,12 +765,12 @@ router.get("/reports/carerSchedules/:monthForSchedules", function(req, res) {
 
   var sql = `select distinct carer_id from shifts where shift_month = '${monthInput}'`;
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       var carers = result;
       // console.log(result);
       if (error) {
@@ -1627,7 +792,7 @@ router.get("/reports/carerSchedules/:monthForSchedules", function(req, res) {
           sql +
           ` where shift_month = '${monthInput}' and carer_id = ${carerId}`;
         sql = sql + ` order by carers.last_name,shift_start`;
-        connection.query(sql, function(error, result) {
+        connection.query(sql, function (error, result) {
           if (error) {
             res.end(JSON.stringify(response.failure));
           }
@@ -1866,9 +1031,9 @@ router.get("/reports/carerSchedules/:monthForSchedules", function(req, res) {
   // console.log('End :' + Date.now());
   // console.log(reportData.length);
   // console.log("timeOutLength is " + timeOutLength);
-  setTimeout(function() {
+  setTimeout(function () {
     res.contentType("application/pdf");
-    createCarerFile();
+    createCarerFile(reportData);
     var host = req.hostname;
     var port = req.socket.localPort;
     var filename = `CarerSchedules.pdf`;
@@ -1881,595 +1046,104 @@ router.get("/reports/carerSchedules/:monthForSchedules", function(req, res) {
   // res.send(dataToSend);
 });
 
-var shift = [
-  {
-    scheduleDay: 1,
-    scheduleDayOfWeek: 1,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 2,
-    scheduleDayOfWeek: 2,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 3,
-    scheduleDayOfWeek: 3,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 4,
-    scheduleDayOfWeek: 4,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 5,
-    scheduleDayOfWeek: 5,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 6,
-    scheduleDayOfWeek: 6,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 7,
-    scheduleDayOfWeek: 7,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 8,
-    scheduleDayOfWeek: 1,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 9,
-    scheduleDayOfWeek: 2,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 10,
-    scheduleDayOfWeek: 3,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 11,
-    scheduleDayOfWeek: 4,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 12,
-    scheduleDayOfWeek: 5,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 13,
-    scheduleDayOfWeek: 6,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 14,
-    scheduleDayOfWeek: 7,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 15,
-    scheduleDayOfWeek: 1,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 16,
-    scheduleDayOfWeek: 2,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 17,
-    scheduleDayOfWeek: 3,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 18,
-    scheduleDayOfWeek: 4,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 19,
-    scheduleDayOfWeek: 5,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 20,
-    scheduleDayOfWeek: 6,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 21,
-    scheduleDayOfWeek: 7,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 22,
-    scheduleDayOfWeek: 1,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 23,
-    scheduleDayOfWeek: 2,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 24,
-    scheduleDayOfWeek: 3,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 25,
-    scheduleDayOfWeek: 4,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 26,
-    scheduleDayOfWeek: 5,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 27,
-    scheduleDayOfWeek: 6,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 28,
-    scheduleDayOfWeek: 7,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 29,
-    scheduleDayOfWeek: 1,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 30,
-    scheduleDayOfWeek: 2,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 31,
-    scheduleDayOfWeek: 3,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 32,
-    scheduleDayOfWeek: 4,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 33,
-    scheduleDayOfWeek: 5,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 34,
-    scheduleDayOfWeek: 6,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 35,
-    scheduleDayOfWeek: 7,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 36,
-    scheduleDayOfWeek: 1,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 37,
-    scheduleDayOfWeek: 2,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 38,
-    scheduleDayOfWeek: 3,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 39,
-    scheduleDayOfWeek: 4,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 40,
-    scheduleDayOfWeek: 5,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 41,
-    scheduleDayOfWeek: 6,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  },
-  {
-    scheduleDay: 42,
-    scheduleDayOfWeek: 7,
-    scheduleDayOfMonth: 0,
-    scheduleNthDayOfMonth: "",
-    scheduleCareId: 0,
-    scheduleShift: "",
-    scheduleTimes: "",
-    scheduleClient: "",
-    day: "",
-    scheduleCarerName: "",
-    scheduleEmployeeNumber: "",
-    scheduleShiftNumber: -1
-  }
-];
+
+router.get("/reports/monthlybilling/:monthForSchedules", function (req, res) {
+  var monthInput = req.params.monthForSchedules;
+  console.log(monthInput);
+  var currentMonth = `${monthInput}-01`;
+  currentMonth = moment(currentMonth).format("MMMM-YYYY");
+  const sql = `select ct.client_type_description as ClientType,   client_id as ClientID, cl.last_name as ClientLastName, cl.first_name as ClientFirstName, shift_start as ShiftStart, shift_end as ShiftEnd, timediff(shift_end, shift_start) as ShiftLength, 
+                    payrollCode, ca.employee_number as EmployeeNumber, ca.last_name as CarerLastName, ca.first_name as CarerFirstName
+                    from shifts s
+                    join clients cl on cl.id = s.client_id
+                    join carers ca on ca.id = s.carer_id
+                    join client_type ct on ct.id = cl.client_type
+                    where shift_month = '${monthInput}' and time_sheets_processed = true
+                    order by cl.last_name, cl.first_name, shift_start`;
+  pool.getConnection(function (err, connection) {
+    if (err) {
+      connection.release();
+      resizeBy.send("Error with connection");
+    }
+    connection.query(sql, function (error, result) {
+      if (error) {
+        console.log(error);
+      }
+      const data = result;
+      console.log(data[0]);
+      console.log(data.length);
+      var host = req.hostname;
+      var port = req.socket.localPort;
+      var filename = `MonthlyBilling.csv`;
+      var filepath = `./files/${filename}`;
+      var dataToSend = `${reportLocation}${filename}`;
+      myCSVData = [];
+
+      if (data.length === 0) {
+        const billing = {
+          ClientType: "Nothing processed yet",
+          ClientID: "",
+          ClientLastName: "",
+          ClientFirstName: "",
+          ShiftStart: "",
+          ShiftEnd: "",
+          ShiftLength: "",
+          payrollCode: "",
+          EmployeeNumber: "",
+          CarerLastName: "",
+          CarerFirstName: ""
+        };
+        myCSVData.push(billing);
+      } else {
+        for (i = 0; i < data.length; i++) {
+          const billing = {
+            ClientType: `${data[i].ClientType}`,
+            ClientID: `${data[i].ClientID}`,
+            ClientLastName: `${data[i].ClientLastName}`,
+            ClientFirstName: `${data[i].ClientFirstName}`,
+            ShiftStart: `${moment(data[i].ShiftStart).format(
+              "YYYY-MM-DD HH:mm"
+            )}`,
+            ShiftEnd: `${moment(data[i].ShiftEnd).format("YYYY-MM-DD HH:mm")}`,
+            ShiftLength: `${data[i].ShiftLength}`,
+            payrollCode: `${data[i].payrollCode}`,
+            EmployeeNumber: `${data[i].EmployeeNumber}`,
+            CarerLastName: `${data[i].CarerLastName}`,
+            CarerFirstName: `${data[i].CarerFirstName}`
+          };
+          myCSVData.push(billing);
+        }
+      }
+
+      const fields = [
+        "ClientType",
+        "ClientID",
+        "ClientLastName",
+        "ClientFirstName",
+        "ShiftStart",
+        "ShiftEnd",
+        "ShiftLength",
+        "payrollCode",
+        "EmployeeNumber",
+        "CarerLastName",
+        "CarerFirstName"
+      ];
+      const json2csvParser = new Json2csvParser({
+        fields
+      });
+      const csv = json2csvParser.parse(myCSVData);
+      fs.writeFile(filepath, csv, function (err) {
+        if (err) throw err;
+      });
+
+      res.send(dataToSend);
+      console.log("Created File!!");
+    });
+
+    connection.release();
+  });
+});
+
+
 
 module.exports = router;

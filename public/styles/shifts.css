@@ -130,7 +130,7 @@ p {
 
 .day {
     width: 148px;
-    height: 150px;/* could be 100 Chnged from 100 * 100 to cater for 3 shifts */
+    height: 148px;/* could be 100 Chnged from 100 * 100 to cater for 3 shifts */
     border: 1px solid black;
     margin: 2px 2px 2px 2px;
     flex-grow: 2;
@@ -172,6 +172,7 @@ label {
   color: black;
   font-weight: bold;
   height: 10px;
+  /* margin-bottom: 0px; */
 }
 
 #test {
@@ -183,7 +184,7 @@ label {
 
 .testing {
   width: 150px;
-    height: 15px;
+    height: 27px;
     border: 1px solid black;
     margin: 1px 1px 1px 1px;
     /* flex-grow: 2; */
@@ -191,7 +192,7 @@ label {
 
 .shiftAllocated {
   width: 150px;
-    height: 16px;
+    height: 27px;
     border: 1px solid black;
     margin: 1px 1px 1px 1px;
     box-shadow: 6px 4px 2px 1px #4E5451;

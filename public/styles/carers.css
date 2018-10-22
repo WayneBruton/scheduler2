@@ -240,7 +240,7 @@ button {
 .inputData {
   position: absolute;
   width: 300px;
-  height: 420px;
+  height: 480px;
   border: 2px solid grey;
   background-color: khaki;
   display: flex;
@@ -256,7 +256,7 @@ button {
 }
 
 .inputBtns {
-  margin-top: 15px;
+  margin-top: 10px;
   display: flex;
 }
 
@@ -272,9 +272,9 @@ button {
   top: 0;
   left: 0;
   display: none;
-  width: 60%;
+  /* width: 60%; */
   width: 1em;
-  height: 60%;
+  height: 100%;
   color: #050000;
   background-color: #ffffff00; 
   opacity: 1; 
@@ -285,9 +285,9 @@ button {
     top: 0;
     left: 0;
     display: none;
-    width: 60%;
+    /* width: 60%; */
     width: 1em;
-    height: 60%;
+    height: 95%;
     color: #050000;
     background-color: #1f91ce; 
     opacity: 1;
@@ -299,13 +299,13 @@ button {
 .inputData1 {
   position: absolute;
   width: 300px;
-  height: 510px;
+  height: 580px;
   border: 2px solid grey;
   background-color: khaki;
   display: flex;
   align-content: flex-end;
   padding-left: 10px;
-  padding-top: 10px;
+  padding-top: 5px;
   border-radius: 7px;
 }
 
@@ -315,14 +315,18 @@ button {
 }
 
 .inputBtns1 {
-  margin-top: 15px;
+  margin-top: 10px;
   display: flex;
+  /* cursor: pointer; */
 }
 
 .inputs1 {
   width: 250px;
   height: 25px;
+}
 
+#editNewCarer #resetEdit {
+  cursor: pointer;
 }
 
 /* ACTIVE VS INACTIVE */
@@ -335,11 +339,13 @@ button {
 }
 
 
+
+
 #activity {
   display: inline;
   color: black;
   font-weight: bold;
-  padding: 10px;
+  padding: 5px;
   transform: scale(1.5);
 }
 

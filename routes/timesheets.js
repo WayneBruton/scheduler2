@@ -7,7 +7,7 @@ var pool = require('./connection');
 var fs = require('fs');
 const path = require('path');
 
-moment.tz.setDefault('Africa/Johannesburg');
+// moment.tz.setDefault('Africa/Abidjan');
 
 
 
@@ -17,9 +17,13 @@ var reportLocation = process.env.DATABASE_REPORTS;
 
 //PROCESS TIMESHEETS /processVIPFile/
 
+
+
 router.get('/processTimesheets',authenticationMiddleware(), function(req, res){
     var viewjs = '../public/js/processTimesheets.js';
     var viewcss = '../public/styles/processTimesheets.css';
+    console.log(moment.tz.guess());
+
     res.render('processTimesheets', {viewjs: viewjs, viewcss: viewcss});
 
 });
@@ -111,6 +115,8 @@ router.get('/timesheetRetrieve/:searchMonth/:processedOrNot/:searchBy/:search', 
             var overBilling = results[4];
             var longShifts = results[5];
             var overlaps = results[6];
+            var timezone = moment.tz.guess();
+
     
             var latestTimeSheets = [];
     
@@ -121,7 +127,9 @@ router.get('/timesheetRetrieve/:searchMonth/:processedOrNot/:searchBy/:search', 
                 duplicates: duplicates,
                 overBilling: overBilling,
                 longShifts: longShifts,
-                overlaps: overlaps
+                overlaps: overlaps,
+                timezone: timezone
+
             });
             // console.log(timesheets);  
         });

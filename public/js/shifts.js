@@ -24,10 +24,9 @@ $(function() {
     displayTooltips = 0;
     });
 
-    // $(window).bind('beforeunload', function(){
-    //     // alert("Are your sure?")
-    //     deleteshifts();
-    // });
+    // moment.tz.setDefault('Africa/Abidjan');
+
+ 
  
     $("#monthInput").change(function (e) { 
         e.preventDefault();
@@ -89,7 +88,10 @@ $(function() {
         client_selected = $("#client-select");
         carer_selected = $("#carer-select"); 
         if(parseInt(client_selected.val()) === 0 || parseInt(carer_selected.val()) === 0 || parseInt(shift_type.val()) === 0){
-            alert("Please select a Client, Carer as well as a Shift");
+            $.alert({
+                title: 'Alert!',
+                content: 'Please select a Client, Carer as well as a Shift!',
+            });
         }
 
         if(parseInt(shift_type.val()) === 1 || parseInt(shift_type.val()) === 2 || parseInt(shift_type.val()) === 5 && parseInt(client_selected.val()) !== 0 && parseInt(carer_selected.val()) !== 0){
@@ -153,16 +155,52 @@ $(function() {
     function myProcess() {
         var txt;
         if (shiftsAllocated.length === 0 ) {
-            alert("There are no shifts to Process");
+            $.alert({
+                        title: 'Alert!',
+                        content: 'here are no shifts to Process!',
+                    });
         } else {
-            var r = confirm("Are you sure?");
-        if (r == true) {
-            txt = "You pressed OK!";
-            processShiftsAllocatedArray();
-        } else {
-            txt = "You pressed Cancel!";
-        }
-        }   
+            $.confirm({
+                        title: 'Confirm!',
+                        content: 'Are you sure?',
+                        buttons: {
+                            confirm: {
+                                btnClass: 'btn-blue',
+                                keys: ['enter', 'shift'],
+                                action: function () {
+                                    processShiftsAllocatedArray();
+                                }
+                            },
+                            cancel: function () {}
+                        }
+                    }); 
+        } 
+
+        // if (shiftsAllocated.length === 0 ) {
+        //     $.alert({
+        //         title: 'Alert!',
+        //         content: 'here are no shifts to Process!',
+        //     });
+        // } 
+        // else {
+        //     $.confirm({
+        //         title: 'Confirm!',
+        //         content: 'Are you sure?',
+        //         buttons: {
+        //             confirm: {
+        //                 btnClass: 'btn-blue',
+        //                 keys: ['enter', 'shift'],
+        //                 action: function () {
+        //                     processShiftsAllocatedArray();
+        //                 }
+        //             },
+        //             cancel: function () {}
+        //         }
+        //     });
+     
+
+
+
     }
 
     function processShiftsAllocatedArray() {
@@ -338,7 +376,11 @@ $(function() {
         var timesheetProcessed = escape(res);
 
         if (timesheetProcessed === '%u2726') {
-            alert("This shift timesheet has been processed or finalized\n If it has not been finalized, \nyou can un-process it in the timesheet page.");
+
+            $.alert({
+                title: 'Alert!',
+                content: 'This shift timesheet has been processed or finalized\n If it has not been finalized, \nyou can un-process it in the timesheet page.!',
+            });
         } else if (timesheetProcessed === '%u2714'){
             var shiftToDelete = $(this).attr("id");
             shiftToDelete = parseInt(shiftToDelete);
@@ -381,7 +423,11 @@ $(function() {
         carer_selected = $("#carer-select");
         dayID = $(this).attr("id");
         if (parseInt(client_selected.val()) === 0 || parseInt(carer_selected.val()) === 0 || parseInt(shift_type.val()) === 0) {
-            alert("Client, Carer and Shift need to be selected")
+            // alert("Client, Carer and Shift need to be selected")
+            $.alert({
+                title: 'Alert!',
+                content: 'Client, Carer and Shift need to be selected!',
+            });
         } else {
             if (parseInt(shift_type.val()) === 1 || parseInt(shift_type.val()) === 2 || parseInt(shift_type.val()) === 5) {
                 start_time = '07:00';
@@ -701,7 +747,7 @@ $(function() {
                 if ((`${data.shifts[i].last_name}:${(data.shifts[i].first_name).substr(0,1)}`).length > 14) {
                     par.css("font-size", "1em;")
                 } else {
-                    par.css("font-size", "1.05em;")
+                    par.css("font-size", "1em;")
                 }
 
                 par.appendTo(insert);

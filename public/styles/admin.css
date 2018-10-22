@@ -5,20 +5,17 @@
 
 
 header {
-  /* position: absolute; */
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   align-content: center;
   padding: 50px 100px 0;
-  /* animation: 1s fadein 0.5s forwards; */
   opacity: 1;
   color: white;
   z-index: 1;
   align-items: center;
   background-color: #1f91ce;
-  /* background-color: red; */
 }
 
 @keyframes fadein {
@@ -41,6 +38,7 @@ header nav {
   justify-content: center;
   align-items: center;
 }
+
 header nav li {
   margin: 0 15px;
 }
@@ -51,7 +49,8 @@ a {
   color: #fff;
 }
 
-ul, nav {
+ul,
+nav {
   list-style: none;
   font-size: 15px;
   font-weight: bold;
@@ -72,89 +71,110 @@ a:hover {
     padding: 20px 50px;
     flex-direction: column;
   }
+
   header h2 {
     margin-bottom: 15px;
   }
 }
 
 * {
-	margin:0;
-	padding:0;
-	box-sizing:border-box;
-	-webkit-box-sizing:border-box;
-	-moz-box-sizing:border-box;
-	-webkit-font-smoothing:antialiased;
-	-moz-font-smoothing:antialiased;
-	-o-font-smoothing:antialiased;
-	font-smoothing:antialiased;
-	text-rendering:optimizeLegibility;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -o-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-	font-family:"Open Sans", Helvetica, Arial, sans-serif;
-	font-weight:300;
-	font-size: 12px;
-	line-height:30px;
-	color:#777;
-    /* background-color: #DDDDDD; */
-    /* background-image: url('../images/avian-bird-nest-birth-158734.jpg'); */
-    
-    background-size: cover;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 30px;
+  color: #777;
+  /* background-color: #DDDDDD; */
+  /* background-image: url('../images/avian-bird-nest-birth-158734.jpg'); */
+
+  background-size: cover;
   /* #DDDDDD */
 }
 
 img {
-    z-index: 1;
-    background-size: cover;
-    display: block;
+  z-index: 1;
+  background-size: cover;
+  display: block;
 }
 
 #functions {
-    display: flex;
-    flex-wrap: wrap;
-    /* justify-content: space-between; */
-    justify-content: space-evenly;
-    margin-top: 7.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  /* justify-content: space-between; */
+  justify-content: space-evenly;
+  margin-top: 7.5rem;
 
 
 
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 10%;
-    margin: 50px;
-    height: 150px;
-    background-color: #1f91ce;
-    color: whitesmoke;
-    padding-top: 15px;
-    opacity: 1;
-    border-radius: 7px;
-    
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 10%;
+  margin: 50px;
+  height: 150px;
+  background-color: #1f91ce;
+  color: whitesmoke;
+  padding-top: 15px;
+  opacity: 1;
+  border-radius: 7px;
+
 }
+
 .container:hover {
-    opacity: 1;
-    /* background-color: orchid; */
-    background-color: #1f91ce;
+  opacity: 1;
+  /* background-color: orchid; */
+  background-color: #1f91ce;
 }
+
+.container a {
+  align-items: center;
+  color: whitesmoke;
+}
+
+.container h1 {
+  align-items: center;
+  color: whitesmoke;
+  font-size: 1.5rem;
+}
+
+
+.container a i:hover {
+  color: whitesmoke;
+
+
+}
+
 
 
 .background-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    z-index: -1;
-    background-color: wheat;
-    background-image: url('../images/avian-bird-nest-birth-158734.jpg');
-    opacity: 0.45;
-    /* image-resolution: snap; */
-    /* image-resolution: 20dpi; */
-    /* filter: grayscale(); */
-  }
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  z-index: -1;
+  background-color: wheat;
+  background-image: url('../images/avian-bird-nest-birth-158734.jpg');
+  opacity: 0.45;
+  /* image-resolution: snap; */
+  /* image-resolution: 20dpi; */
+  /* filter: grayscale(); */
+}
 
-  /* #80a3b */
+/* #80a3b */

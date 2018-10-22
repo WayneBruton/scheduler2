@@ -1,13 +1,12 @@
-$(function(){
+$(function () {
     var inputMonth = moment().format("YYYY-MM");
     var searchMonth; //shift_month to search for
-    var processedOrNot = false;//To search for processed or unprocesed timesheets
-    var search = '&&';//String to search for
+    var processedOrNot = false; //To search for processed or unprocesed timesheets
+    var search = '&&'; //String to search for
 
     searchMonth = inputMonth;
-    moment.tz.setDefault('Africa/Johannesburg');
-    // console.log(moment.tz.setDefault('Africa/Johannesburg'));
-    console.log(moment.tz.guess());
+    // moment.tz.setDefault('Africa/Abidjan');
+
 
     //OPENING DEFAULTS     
 
@@ -20,23 +19,23 @@ $(function(){
 
     //TO SEARCH BY CARER, CLIENT OR EMPLOYEE NUMBER
 
-    $('#carerRadio').click(function () { 
+    $('#carerRadio').click(function () {
         $('#clientRadio').prop("checked", false);
         $('#employeeRadio').prop("checked", false);
         $('#searchInput').attr("placeholder", "Search by Carer's Last Name");
-        $("#searchByRadio").val("carers"); 
+        $("#searchByRadio").val("carers");
         getTimesheets();
     });
 
-    $('#clientRadio').click(function () { 
+    $('#clientRadio').click(function () {
         $('#employeeRadio').prop("checked", false);
         $('#carerRadio').prop("checked", false);
-        $('#searchInput').attr("placeholder", "Search by Client's Last Name"); 
+        $('#searchInput').attr("placeholder", "Search by Client's Last Name");
         $("#searchByRadio").val("clients");
         getTimesheets();
     });
 
-    $('#employeeRadio').click(function () { 
+    $('#employeeRadio').click(function () {
         $('#clientRadio').prop("checked", false);
         $('#carerRadio').prop("checked", false);
         $('#searchInput').attr("placeholder", "Search by Employee Number");
@@ -45,73 +44,72 @@ $(function(){
         getTimesheets();
     });
 
-    $(function(){//To search for processed or unprocesed timesheets
+    $(function () { //To search for processed or unprocesed timesheets
         $("#processedOrNot").prop("checked", true);
         $(".processedOrNot").val(processedOrNot);
-        });
+    });
 
-        $("#processedOrNot").click(function (e) { 
-            if ($(this).prop("checked") === false) {
-                processedOrNot = true;
-                $(".checkboxtext").text("Processed but NOT Invoiced Timesheets Selected")
-            } 
-            else {
-                processedOrNot = false;
-                $(".checkboxtext").text("Un-Processed Timesheets Selected")
+    $("#processedOrNot").click(function (e) {
+        if ($(this).prop("checked") === false) {
+            processedOrNot = true;
+            $(".checkboxtext").text("Processed but NOT Invoiced Timesheets Selected")
+        } else {
+            processedOrNot = false;
+            $(".checkboxtext").text("Un-Processed Timesheets Selected")
 
-            }
-            $(".processedOrNot").val(processedOrNot);
+        }
+        $(".processedOrNot").val(processedOrNot);
 
-            getTimesheets();
-        });
+        getTimesheets();
+    });
 
 
     //MOVE BETWEN MONTHS
-    $('#previous').click(function (e) { 
+    $('#previous').click(function (e) {
         e.preventDefault();
         var newMonth = $("#inputMonth").val();
         newMonth = newMonth + '-01';
-        newMonth = moment(newMonth).subtract(1,'M').format("YYYY-MM-DD"); 
+        newMonth = moment(newMonth).subtract(1, 'M').format("YYYY-MM-DD");
         newMonth = moment(newMonth).format("YYYY-MM");
         $("#inputMonth").val(newMonth);
-        searchMonth = newMonth;//shift_month to search for
-        getTimesheets();  
+        searchMonth = newMonth; //shift_month to search for
+        getTimesheets();
     });
 
-    $('#next').click(function (e) { 
+    $('#next').click(function (e) {
         e.preventDefault();
         var newMonth = $("#inputMonth").val();
         newMonth = newMonth + '-01';
-        newMonth = moment(newMonth).add(1,'M').format("YYYY-MM-DD"); 
+        newMonth = moment(newMonth).add(1, 'M').format("YYYY-MM-DD");
         newMonth = moment(newMonth).format("YYYY-MM");
-        $("#inputMonth").val(newMonth); 
+        $("#inputMonth").val(newMonth);
         searchMonth = newMonth; //shift_month to search for
-        getTimesheets();    
+        getTimesheets();
     });
 
     $('#searchInput').keydown(function (e) {
-    if(event.keyCode == 13) {
-        e.preventDefault();
-        $(".searchShifts").focus();
-        // getTimesheets();
-        return false;
+        if (event.keyCode == 13) {
+            e.preventDefault();
+            $(".searchShifts").focus();
+            // getTimesheets();
+            return false;
 
-      }
-    // getTimesheets();
+        }
+        // getTimesheets();
     });
 
-    
 
-    
+
+
 
     $('#searchInput').keyup(function (e) {
         search = $(this).val();
         if (search === '') {
             search = '&&'
-        } 
+        }
     });
 
-    $(".searchShifts").click(function (e) { 
+    $(".searchShifts").click(function (e) {
         e.preventDefault();
         getTimesheets();
     });
@@ -142,18 +140,20 @@ $(function(){
 
         var url = '/timesheetsReceived';
 
-        $.ajax({ 
-            type: 'POST', 
-            url: url, 
-            data:  { dataToPost } , 
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                dataToPost
+            },
             dataType: 'json'
-          }).done(function(response){
-              console.log(response);
-          }).fail(function(response){
+        }).done(function (response) {
+            console.log(response);
+        }).fail(function (response) {
             console.log(response);
 
-          });
-          getTimesheets();    
+        });
+        getTimesheets();
     });
 
 
@@ -165,27 +165,29 @@ $(function(){
         dataToDelete.push(shiftId);
 
         var url = '/deleteTimesheetsAllocated';
-        $.ajax({ 
-            type: 'DELETE', 
-            url: url, 
-            data:  { dataToDelete } , 
+        $.ajax({
+            type: 'DELETE',
+            url: url,
+            data: {
+                dataToDelete
+            },
             dataType: 'json'
-          }).done(function(response){
+        }).done(function (response) {
 
-          }).fail(function(response){
+        }).fail(function (response) {
 
-          });
-          getTimesheets();    
+        });
+        getTimesheets();
     });
 
 
 
-    
-
-    function getTimesheets(){
+    // Europe/Berlin
+    // Africa/Abidjan
+    function getTimesheets() {
         const searchBy = $("#searchByRadio").val();
         const url = '/timesheetRetrieve/' + searchMonth + '/' + processedOrNot + '/' + searchBy + '/' + search;
-        $.get(url, function(data){
+        $.get(url, function (data) {
             $('#timesheetData').empty();
             // data = data.timesheets;
             // console.log(data.timesheets);
@@ -195,13 +197,14 @@ $(function(){
             data5 = data.overBilling;
             data6 = data.longShifts;
             data7 = data.overlaps;
-            console.log('processed count',data2);
+            console.log('processed count', data2);
             var duplicateText = data4.length;
             var overBillingText = data5.length;
             var longShiftsText = data6.length;
             var overlapText = data7.length;
             var labelText = data2[0].count;
             var outOf = data3[0].count;
+            console.log('This is the timezone', data.timezone)
             if (labelText === 1) {
                 labelText = `There is ${labelText} out of ${outOf} shift still unprocessed.`;
             } else {
@@ -266,15 +269,15 @@ $(function(){
 
 
             data = data.timesheets;
-            
- 
 
-            $.each(data, function (index, value) { 
+
+
+            $.each(data, function (index, value) {
                 // console.log(data.timesheets);
                 // const startDate = moment.tz((this.shift_start), "Africa/Johannesburg").format("YYYY-MM-DD");
                 const startDate = moment(this.shift_start).format("YYYY-MM-DD");
-   
-                
+
+
                 const startTime = moment(this.shift_start).format("HH:mm");
                 const endDate = moment(this.shift_end).format("YYYY-MM-DD");
                 const endTime = moment(this.shift_end).format("HH:mm");
@@ -282,8 +285,8 @@ $(function(){
                 // const endDate = moment.tz(this.shift_end, "Africa/Johannesburg").format("YYYY-MM-DD");
                 // const endTime = moment.tz(this.shift_end, "Africa/Johannesburg").format("HH:mm:ss");
                 // console.log(endTime);
-                var input =  `Client:  ${this.clientId} - ${this.clientFirstName} : ${this.clientLastName} `;                   
-                input =  input + ` | Carer: EE Num: ${this.carerEmployeeNumber} - ${this.carerFirstName} : ${this.carerLastName}`;
+                var input = `Client:  ${this.clientId} - ${this.clientFirstName} : ${this.clientLastName} `;
+                input = input + ` | Carer: EE Num: ${this.carerEmployeeNumber} - ${this.carerFirstName} : ${this.carerLastName}`;
                 var timesheetAdd = `<div class="timesheet-li-div"><form action="" method=""><li class="timesheet-li"> ${input} </li>`;
                 if (processedOrNot === false) {
                     timesheetAdd = timesheetAdd + `<input type="hidden" name="shiftId" class="shiftId" value="${this.shiftId}"> from: <input type="date"  class="timesheetDate startShiftDate masterTooltip" title="Change to start date" name="shiftStartDate" id="" value="${startDate}">`;
@@ -302,34 +305,34 @@ $(function(){
                 }
                 timesheetAdd = $(timesheetAdd);
                 timesheetAdd.appendTo('#timesheetData');
-                
+
             });
 
         });
     };
 
     //PROCESS WAGE FILE 
-  
-   function deleteFile() {
+
+    function deleteFile() {
         var file = filetodownload;
         file = file.split('/');
         file = file[file.length - 1];
         // console.log('This is the file',file);
         var url = '/remove/' + file;
 
-        $.get(url,function(data){
+        $.get(url, function (data) {
 
-        }).done(function(response){
+        }).done(function (response) {
 
             clearTimeout(deleteFile);
 
-        }).fail(function(response){
+        }).fail(function (response) {
 
         });
-     // setTimeout(run,7000); 
+        // setTimeout(run,7000); 
     }
 
-    $('#openDownLoadFile').click(function(e) {
+    $('#openDownLoadFile').click(function (e) {
         setTimeout(deleteFile, 1500);
         // deleteFile(); 
         $(this).css("display", "none");
@@ -339,90 +342,102 @@ $(function(){
     var host = '';
     var port = '';
 
-    $("#processWages").click(function (e) { 
+    $("#processWages").click(function (e) {
         e.preventDefault();
         processVIPFileConfirmation();
     });
 
 
     function processVIPFile() {
-        var dataProcess =  $("#inputMonth").val();
+        var dataProcess = $("#inputMonth").val();
         var url = '/processVIPFile/' + dataProcess;
-        $.get(url, function(data){
+        $.get(url, function (data) {
 
             // filetodownload = data.filename;
             // host = data.host;
             // port = data.port
 
 
-    
+
             $("body").css("background-color", "orange");
-            setTimeout(function(){
+            setTimeout(function () {
                 $("body").css("background-color", "#DDDDDD");
             }, 250)
-        }).done(function(response){
+        }).done(function (response) {
             // console.log('This is the response',response);
             filetodownload = response;
             $("#openDownLoadFile").attr("href", `${filetodownload}`);
             // $("#openDownLoadFile").attr("href", `http://${host}:${port}/download/${filetodownload}`);
             $("#openDownLoadFile").css("display", "inline");
-          }).fail(function(){
+        }).fail(function () {
             console.log("Failed");
-          });
+        });
     }
 
     function processVIPFileConfirmation() {
-        var txt;
-        var r = confirm("Are you sure?");
-        if (r === true) {
-            txt = "You pressed OK!";
-            processVIPFile();
-        } else {
-            txt = "You pressed Cancel!";
-        }
-  
+        $.confirm({
+            title: 'Confirm!',
+            content: 'Are you sure?',
+            buttons: {
+                confirm: {
+                    btnClass: 'btn-blue',
+                    keys: ['enter', 'shift'],
+                    action: function () {
+                        processVIPFile();
+                    }
+                },
+                cancel: function () {}
+            }
+        });
+
     }
 
     //TOOLTIPS
     var displayTooltips;
-    
-    $(".displayTooltips").click(function (e) { 
+
+    $(".displayTooltips").click(function (e) {
         e.preventDefault();
-        if (displayTooltips === 1){
+        if (displayTooltips === 1) {
             displayTooltips = 0;
             $(this).text("Show Tooltips")
         } else {
             displayTooltips = 1;
             $(this).text("Hide Tooltips")
-        }   
+        }
     });
 
 
-    $("body").on("mouseenter", ".masterTooltip",function () {
-        if (displayTooltips === 1 ) {
- 
+    $("body").on("mouseenter", ".masterTooltip", function () {
+        if (displayTooltips === 1) {
+
             var title = $(this).attr('title');
             $(this).data('tipText', title).removeAttr('title');
             $('<p class="tooltip"></p>')
-            .text(title)
-            .appendTo('body')
-            .fadeIn('slow');
-    }});
+                .text(title)
+                .appendTo('body')
+                .fadeIn('slow');
+        }
+    });
 
 
-    $("body").on("mousemove",".masterTooltip", function (e) {
-        if (displayTooltips === 1 ) { 
+    $("body").on("mousemove", ".masterTooltip", function (e) {
+        if (displayTooltips === 1) {
             var mousex = e.pageX - 100; //Get X coordinates
-                    var mousey = e.pageY - 100; //Get Y coordinates
-                    $('.tooltip')
-                    .css({ top: mousey, left: mousex })   
-    }});
+            var mousey = e.pageY - 100; //Get Y coordinates
+            $('.tooltip')
+                .css({
+                    top: mousey,
+                    left: mousex
+                })
+        }
+    });
 
 
-    $("body").on("mouseleave",".masterTooltip", function () {
-        if (displayTooltips === 1 ) {
+    $("body").on("mouseleave", ".masterTooltip", function () {
+        if (displayTooltips === 1) {
             $(this).attr('title', $(this).data('tipText'));
-            $('.tooltip').remove(); 
-    }});
-    
+            $('.tooltip').remove();
+        }
+    });
+
 });
