@@ -4,17 +4,30 @@ const path = require('path');
 const app = express();
 var expressValidator = require('express-validator');
 var cookieParser = require('cookie-parser');
-require('dotenv/config');
+var moment = require('moment-timezone');
+
+const port = process.env.PORT || 3000;
+
+const portExport = {
+  port: 9999
+}
+module.exports = portExport;
+if (port === 3000) {
+  require('dotenv/config');
+}
+
 var pool = require('./routes/connection');
 var bcrypt = require('bcryptjs');
 
+
+
+console.log(moment.tz.guess());
 
 
 var session = require('express-session');
 var passport = require('passport');
 var MySQLStore = require('express-mysql-session')(session);
 var LocalStrategy = require('passport-local').Strategy;
-
 
 
 var clientRoutes        = require('./routes/clients'),
@@ -26,7 +39,8 @@ var clientRoutes        = require('./routes/clients'),
     reportRoutes        = require('./routes/reports'),
     graphRoutes         = require('./routes/graph'),
     adminRoutes         = require('./routes/admin'),
-    registerRoutes      = require('./routes/register');
+    registerRoutes      = require('./routes/register'),
+    forgotPasswordRoutes      = require('./routes/forgotpassword');
 
 
 
@@ -113,12 +127,21 @@ app.use(reportRoutes);
 app.use(graphRoutes);
 app.use(adminRoutes);
 app.use(registerRoutes);
+app.use(forgotPasswordRoutes);
+
+// console.log(port);
 
 
 // process.env.PORT
-app.listen(3000, process.env.IP, function(){
+app.listen(port, process.env.IP, function(){
     console.log(`Wayne's server started.....`);
 });
+
+
+// console.log(portExport);
+// console.log(module.exports);
+
+
 
 
 

@@ -1,6 +1,13 @@
 var express = require('express');
 var router = express.Router();
-require('dotenv/config');
+const  portExport  = require('../app');
+// const port = portExport.port;
+console.log('Imported',portExport.port);
+if (portExport.port === 3000) {
+    require('dotenv/config');
+}
+
+
 
 const mysql = require('mysql');
 

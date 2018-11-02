@@ -6,8 +6,12 @@ create table users (
     username VARCHAR(15) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    createdAt TIMESTAMP DEFAULT NOW()
+    createdAt TIMESTAMP DEFAULT NOW(),
+    resettoken varchar(20),
+    resetexpiry TIMESTAMP DEFAULT NOW()
 );
+
+
 
 CREATE TABLE client_type (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -132,7 +136,8 @@ INSERT INTO publicHolidays (publicHolidayDate, publicHolidayDescription ) values
 
 
 
-
+alter table users add column resettoken varchar(20);
+alter table users add column resetexpiry TIMESTAMP default now();
 
 
 

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="../public/styles/forgot.css">
+    <script src="../public/js/jquery-3.3.1.min.js"></script>
+    <script src="../public/js/forgot.js"></script>
+    <title>Scheduler</title>
+</head>
+<body>
+              <div class="alerts">
+                <div class="alert alert-success" role="alert">
+                  Please check your email and copy the token provided!
+                </div>
+                <div class="alert alert-danger" role="alert">
+                  The user name and / or the email are not on the system!
+                </div>
+              </div>
+        <form id="initialForm">
+              <div class="form-group row">
+                  <h2>FORGOT PASSWORD</h2>
+              </div>
+              <div class="form-group row">
+                <label for="username" class="col-sm-2 col-form-label">User Name</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="username" placeholder="User name" value="">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="email" class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-10">
+                  <input type="email" class="form-control" id="inputEmail" placeholder="email">
+                </div>
+              </div>
+              <br><br>
+              <div class="buttonsArrange">
+              <div class="form-group row">
+                <div class="col-sm-10 subBtn">
+                  <button type="submit" class="btn btn-primary" id="submitBtn">Reset Password</button>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-10">
+                  <a href="/" class="btn btn-primary">Return Home</a>
+                </div>
+              </div>
+            </div>    
+        </form>
+
+        <!-- ############################################# -->
+
+        <form id="resetForm">
+              <div class="form-group row">
+                  <h2>RESET PASSWORD</h2>
+              </div>
+              <div class="form-group row">
+                <label for="username" class="col-sm-2 col-form-label">User Name</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="usernameChange" placeholder="User name" value="">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="token" class="col-sm-2 col-form-label">Token</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="tokenNumber" placeholder="Token" value="">
+                </div>
+              </div>
+              <h6 id="passwordMessage">Must be at least 8 characters, have at least 1 uppercase letter, one lowercase letter, one number and one special character</h6>
+              <div class="form-group row">
+                <label for="password" class="col-sm-2 col-form-label">Password</label>
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" id="passwordChange" placeholder="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.[!@#\$%\^&]).{8,}" value="">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="passwordConfirm" class="col-sm-2 col-form-label">Confirm Password</label>
+                <div class="col-sm-10">
+                  <input type="password" class="form-control" id="passwordConfirm" placeholder="confirm password">
+                </div>
+              </div>
+              <br><br>
+              <div class="buttonsArrange">
+              <div class="form-group row">
+                <div class="col-sm-10 subBtn">
+                  <button type="submit" class="btn btn-primary" id="submitChangeBtn">Reset</button>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-10">
+                  <a href="/" class="btn btn-primary">Home</a>
+                </div>
+              </div>
+            </div>    
+        </form>
+              
+</body>
+</html>

@@ -3,10 +3,11 @@ $(function () {
     var searchMonth; //shift_month to search for
     var processedOrNot = false; //To search for processed or unprocesed timesheets
     var search = '&&'; //String to search for
+    // const timezone = $('#timezone').val();
+    // console.log('Timezone from html', timezone);
 
     searchMonth = inputMonth;
     // moment.tz.setDefault('Africa/Abidjan');
-
 
     //OPENING DEFAULTS     
 
@@ -270,13 +271,13 @@ $(function () {
 
             data = data.timesheets;
 
-
+            
 
             $.each(data, function (index, value) {
                 // console.log(data.timesheets);
                 // const startDate = moment.tz((this.shift_start), "Africa/Johannesburg").format("YYYY-MM-DD");
                 const startDate = moment(this.shift_start).format("YYYY-MM-DD");
-
+                
 
                 const startTime = moment(this.shift_start).format("HH:mm");
                 const endDate = moment(this.shift_end).format("YYYY-MM-DD");
@@ -287,6 +288,7 @@ $(function () {
                 // console.log(endTime);
                 var input = `Client:  ${this.clientId} - ${this.clientFirstName} : ${this.clientLastName} `;
                 input = input + ` | Carer: EE Num: ${this.carerEmployeeNumber} - ${this.carerFirstName} : ${this.carerLastName}`;
+
                 var timesheetAdd = `<div class="timesheet-li-div"><form action="" method=""><li class="timesheet-li"> ${input} </li>`;
                 if (processedOrNot === false) {
                     timesheetAdd = timesheetAdd + `<input type="hidden" name="shiftId" class="shiftId" value="${this.shiftId}"> from: <input type="date"  class="timesheetDate startShiftDate masterTooltip" title="Change to start date" name="shiftStartDate" id="" value="${startDate}">`;

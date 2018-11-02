@@ -15,7 +15,11 @@ $(function() {
     var input = moment().format("YYYY-MM");
     var first = input + "-01";
     var publicHolidays = [];
+    // var timezone = moment.tz.guess();
+    // moment.tz.setDefault(`${timezone}`);
+    // console.log('Timezone from html', timezone);
 
+    
 
     $("#monthInput").val(input);
     $(function(){
@@ -23,6 +27,7 @@ $(function() {
     monthCalculate();
     displayTooltips = 0;
     });
+
 
     // moment.tz.setDefault('Africa/Abidjan');
 
@@ -174,34 +179,8 @@ $(function() {
                             cancel: function () {}
                         }
                     }); 
-        } 
-
-        // if (shiftsAllocated.length === 0 ) {
-        //     $.alert({
-        //         title: 'Alert!',
-        //         content: 'here are no shifts to Process!',
-        //     });
-        // } 
-        // else {
-        //     $.confirm({
-        //         title: 'Confirm!',
-        //         content: 'Are you sure?',
-        //         buttons: {
-        //             confirm: {
-        //                 btnClass: 'btn-blue',
-        //                 keys: ['enter', 'shift'],
-        //                 action: function () {
-        //                     processShiftsAllocatedArray();
-        //                 }
-        //             },
-        //             cancel: function () {}
-        //         }
-        //     });
-     
-
-
-
-    }
+        };
+    };
 
     function processShiftsAllocatedArray() {
         shiftsToPost = [];
@@ -409,12 +388,8 @@ $(function() {
                 });
         } else {
 
-        }
-
-        
-                
-
-    }
+        };
+    };
 
     $(".day").click(function (e) { 
         e.preventDefault();

@@ -1,11 +1,18 @@
 var express = require('express');
 var router = express.Router();
-require('dotenv/config');
-// var moment = require('moment');
+const  portExport  = require('../app');
+// const port = portExport.port;
+console.log('Imported',portExport.port);
+if (portExport.port === 3000) {
+    require('dotenv/config');
+}
+// require('dotenv/config');
 var moment = require('moment-timezone');
 var pool = require('./connection');
 var fs = require('fs');
 const path = require('path');
+var moment = require('moment-timezone');
+console.log('Time Sheets Timezone:-', moment.tz.guess());
 
 // moment.tz.setDefault('Africa/Abidjan');
 
@@ -22,9 +29,8 @@ var reportLocation = process.env.DATABASE_REPORTS;
 router.get('/processTimesheets',authenticationMiddleware(), function(req, res){
     var viewjs = '../public/js/processTimesheets.js';
     var viewcss = '../public/styles/processTimesheets.css';
-    console.log(moment.tz.guess());
-
-    res.render('processTimesheets', {viewjs: viewjs, viewcss: viewcss});
+    var timezone = moment.tz.guess();
+    res.render('processTimesheets', {viewjs: viewjs, viewcss: viewcss, timezone: timezone});
 
 });
 
@@ -131,7 +137,6 @@ router.get('/timesheetRetrieve/:searchMonth/:processedOrNot/:searchBy/:search', 
                 timezone: timezone
 
             });
-            // console.log(timesheets);  
         });
         connection.release();
     });
@@ -157,7 +162,6 @@ router.get('/processVIPFile/:dataProcess', function(req, res){
             var filepath = `./files/${filename}`;
             res.send(datatosend);
     
-            // res.send(host);
             for (i = 0; i < wageFile.length; i++) {
                 var st1 = 'D002$';
                 var st2 =  wageFile[i].employee_number;
@@ -197,23 +201,17 @@ router.get('/processVIPFile/:dataProcess', function(req, res){
         });
         connection.release();
     });
-    
-    
 });
 
 router.get('/download/:file(*)',(req, res) => {
     var file = req.params.file;
-    // console.log(file);
     var fileLocation = path.join('./files',file);
     res.download(fileLocation, file); 
   });
 
   router.get('/remove/:file', (req, res) => {
     var file = req.params.file;
-    // console.log("==============");
-    // console.log(file);
     var fileLocation = path.join('./files',file);
-    // console.log(fileLocation);
     var response = {
         success : 'File Destroyed',
         failure: 'There was a problem'

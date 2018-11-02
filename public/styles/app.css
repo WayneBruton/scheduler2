@@ -71,3 +71,7 @@ label {
 .forgot {
     color: white;
 }
+
+#login {
+    cursor: pointer;
+}

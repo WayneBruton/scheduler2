@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var pool = require('./connection');
+var moment = require('moment-timezone');
+
 
 const  { authenticationMiddleware } = require('./middleware');
 
@@ -24,8 +26,9 @@ router.get('/shifts',authenticationMiddleware(), function(req, res){
             var carers = results[1];
             var viewjs = '../public/js/shifts.js';
             var viewcss = '../public/styles/shifts.css';
+            var timezone = moment.tz.guess();
             console.log(viewjs);
-            res.render('shifts', {clients: clients, carers: carers, viewjs: viewjs, viewcss: viewcss});
+            res.render('shifts', {clients: clients, carers: carers, viewjs: viewjs, viewcss: viewcss, timezone:timezone});
         });
         connection.release();
     });
